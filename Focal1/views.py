@@ -141,7 +141,7 @@ def save_tags_to_excel(image_path, tags):
     print(f"Successfully saved tags to Excel for image: {image_path}")
 
 # Django views
-
+# +---------------------------- The views ----------------------------+ 
 def index(request):
     global directory, current_image_index, images
     if request.method == 'POST':
