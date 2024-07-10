@@ -150,7 +150,7 @@ def index(request):
             load_images(directory)
             current_image_index = 0
     ai_tags = generate_tags_for_image(os.path.join(directory, images[current_image_index])) if images else []
-    print("in ''")
+    print("in /")
     print(current_image_index)
     return render(request, 'index.html', {
         'image': images[current_image_index] if images else None,
