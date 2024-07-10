@@ -98,16 +98,12 @@
           <div class="image-list">
             <div class="mb-4">
               <img
-                src="{% url 'uploaded_file' filename=images[current_image_index] %}"
+                src="{% url 'uploaded_file' filename=image %}"
                 alt="Image"
                 class="img-fluid"
               />
               <form action="/tag_image" method="post" class="text-left">
-                <input
-                  type="hidden"
-                  name="image_path"
-                  value="{{ images[current_image_index] }}"
-                />
+                <input type="hidden" name="image_path" value="{{ image }}" />
                 <div class="form-group">
                   <label for="tags">Tags:</label>
                   <input
