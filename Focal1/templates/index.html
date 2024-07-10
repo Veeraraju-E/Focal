@@ -136,9 +136,9 @@
           margin-left: 0;
         }
       }
-      /* .img {
-        max-width: 15% !important ;
-      } */
+      .bg-light{
+        background-color: #ddd !important;
+      }
     </style>
   </head>
   <body>
@@ -177,7 +177,7 @@
         </ul>
       </div>
     </nav>
-    {% if images %}
+    {% if image %}
     <div class="sidebar">
       <h3>Tags Menu</h3>
       <div id="tag-options">
@@ -204,7 +204,7 @@
             <p><strong>Instructions:</strong></p>
             <p>Upload the root folder with images to be tagged.</p>
           </div>
-          <form action="/" method="post" class="mb-4 d-flex align-items-center">
+          <form action="{% url 'index' %}" method="post" class="mb-4 d-flex align-items-center">
             {% csrf_token %}
             <div class="form-group position-relative flex-grow-1">
               <label for="directory">Upload Directory:</label>
@@ -224,7 +224,7 @@
               </button>
             </div>
           </form>
-          {% if images %}
+          {% if image %}
           <div class="image-list">
             <div class="mb-4">
               <img
