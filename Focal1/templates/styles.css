@@ -1,0 +1,125 @@
+body {
+  font-family: "Poppins", sans-serif;
+  background-image: url("static/images/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  margin: 0;
+  color: #fff;
+  padding-top: 60px; /* Add padding to prevent overlap with the navbar */
+}
+.container {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 15px;
+  padding: 2%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 90vh;
+  backdrop-filter: blur(10px);
+  margin-top: 10%;
+}
+img {
+  max-width: 100%;
+  margin: 20px auto;
+  border-radius: 15px;
+}
+.form-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 30px;
+  border-radius: 15px;
+  margin: 0 auto 30px auto;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.instructions {
+  margin-bottom: 20px;
+  font-size: 1.2em;
+}
+.arrowhead_buttons {
+  background-color: #aaa;
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: 25%;
+  border-radius: 25%;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.btn-custom {
+  background-color: #5e89ff;
+  color: #fff;
+  border: none;
+  margin: 2.5% 0 0 0;
+  border-radius: 25px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.ft {
+  background-color: #1b8431;
+  color: #fff;
+  border: none;
+  margin: 5px;
+  border-radius: 25px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.btn-custom:hover {
+  background-color: #0652b6;
+  transform: scale(1.05);
+}
+.btn-block {
+  width: 100%;
+}
+label {
+  font-weight: bold;
+}
+input,
+select,
+button {
+  border-radius: 25px;
+}
+.tag-option {
+  display: block;
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #5e89ff;
+  border-radius: 25px;
+  background-color: #5e89ff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.tag-option:hover {
+  background-color: #071aa3;
+  border-color: #ffffff;
+  transform: scale(1.05);
+}
+.sidebar {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  height: calc(100% - 60px);
+  overflow-y: auto;
+  width: 200px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.main-content {
+  flex-grow: 1;
+  margin-left: 220px;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .main-content {
+    margin-left: 0;
+  }
+}

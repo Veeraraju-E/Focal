@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Tags</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- External CSS -->
+    <link href="find_tags_styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Find Tags</h1>
+      <div class="form-container">
+        <div class="instructions">
+          <p><strong>Instructions:</strong></p>
+          <p>Upload the root folder with images to find tags.</p>
+        </div>
+        <form action="/find_tags" method="post" class="mb-4">
+          <div class="form-group">
+            <label for="directory">Upload Directory:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="directory"
+              name="directory"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-custom btn-block">
+            Upload
+          </button>
+        </form>
+        {% if images %}
+        <div class="image-list">
+          {% for image in images %}
+          <div class="mb-4">
+            <img src="{% url 'uploaded_file' filename=image %}" alt="Image" class="img-fluid" />
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p>No images found.</p>
+        {% endif %}
+      </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.com/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="static/js/scripts.js"></script>
+  </body>
+</html>

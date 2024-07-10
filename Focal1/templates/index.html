@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Focal</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- External CSS -->
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-light">
+      <img src="static/images/logo.png" id="logo" />
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <a class="navbar-brand ml-auto" href="/">
+          <h3 style="color: #0652b6">Project Focal</h3></a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a href="/" class="nav-link" style="color: black">Home</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    {% if images %}
+    <div class="sidebar">
+      <h3>Tags Menu</h3>
+      <div id="tag-options">
+        <h4>Suggested</h4>
+        {% for tag in ai_tags %}
+        <span class="tag-option" onclick="selectTag('{{ tag }}')"
+          >{{ tag }}</span
+        >
+        {% endfor %}
+        <h4>Existing</h4>
+        {% for tag in external_tags %}
+        <span class="tag-option" onclick="selectTag('{{ tag }}')"
+          >{{ tag }}</span
+        >
+        {% endfor %}
+      </div>
+      <a href="{% url 'find_tags' %}" class="btn ft">Find Tags</a>
+    </div>
+    {% endif %}
+    <div class="main-content">
+      <div class="container">
+        <div class="form-container">
+          <div class="instructions">
+            <p><strong>Instructions:</strong></p>
+            <p>Upload the root folder with images to be tagged.</p>
+          </div>
+          <form action="/" method="post" class="mb-4 d-flex align-items-center">
+            <div class="form-group position-relative flex-grow-1">
+              <label for="directory">Upload Directory:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="directory"
+                name="directory"
+                required
+              />
+              <button
+                type="submit"
+                class="btn btn-custom position-absolute"
+                id="Upload"
+              >
+                Upload
+              </button>
+            </div>
+          </form>
+          {% if images %}
+          <div class="image-list">
+            <div class="mb-4">
+              <img
+                src="{% url 'uploaded_file' filename=images[current_image_index] %}"
+                alt="Image"
+                class="img-fluid"
+              />
+              <form action="/tag_image" method="post" class="text-left">
+                <input
+                  type="hidden"
+                  name="image_path"
+                  value="{{ images[current_image_index] }}"
+                />
+                <div class="form-group">
+                  <label for="tags">Tags:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="tags"
+                    name="tags"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="store_option">Store Tags In:</label>
+                  <select
+                    id="store_option"
+                    name="store_option"
+                    class="form-control"
+                    required
+                  >
+                    <option value="metadata">Image Metadata</option>
+                    <option value="text_file">Text File</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-custom btn-block">
+                  Submit Tags
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="navigation-buttons">
+            <button
+              type="button"
+              class="btn btn-custom"
+              id="arrowhead_buttons"
+              onclick="navigateImage('prev_image')"
+            >
+              <img src="static/images/left.png" />
+            </button>
+            <button
+              type="button"
+              class="btn btn-custom"
+              id="arrowhead_buttons"
+              onclick="navigateImage('next_image')"
+            >
+              <img src="static/images/right.png" />
+            </button>
+          </div>
+          {% else %}
+          <p>No images found.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.com/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="static/js/scripts.js"></script>
+  </body>
+</html>

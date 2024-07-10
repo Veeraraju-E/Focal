@@ -1,0 +1,65 @@
+body {
+  font-family: "Poppins", sans-serif;
+  background-image: url("static/images/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  color: #fff;
+}
+.container {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 15px;
+  padding: 2%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  overflow-y: auto;
+  max-height: 90vh;
+  backdrop-filter: blur(10px);
+}
+h1 {
+  margin-bottom: 30px;
+  color: #5e89ff;
+}
+.form-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 30px;
+  border-radius: 15px;
+  margin: 0 auto 30px auto;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.instructions {
+  margin-bottom: 20px;
+  font-size: 1.2em;
+}
+.btn-custom {
+  background-color: #5e89ff;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.btn-custom:hover {
+  background-color: #0652b6;
+  transform: scale(1.05);
+}
+.btn-block {
+  width: 100%;
+}
+label {
+  font-weight: bold;
+}
+input,
+button {
+  border-radius: 25px;
+}
+img {
+  max-width: 100%;
+  margin: 20px auto;
+  border-radius: 15px;
+}
