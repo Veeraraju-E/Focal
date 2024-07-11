@@ -42,6 +42,21 @@
         margin: 20px auto;
         border-radius: 15px;
       }
+      img[src="{% url 'uploaded_file' filename=image %}"] {
+        width: 100%;
+        height: auto;
+        margin: auto;
+      }
+      img[src="static/images/left.png"] {
+        width : 20px;
+        height: 20px;
+        margin: 20px;
+      }
+      img[src="static/images/right.png"] {
+        width : 20px;
+        height: 20px;
+        margin: 20px;
+      }
       .form-container {
         width: 100%;
         max-width: 600px;
@@ -236,7 +251,8 @@
           <img
             src="{% url 'uploaded_file' filename=image %}"
             alt="Image"
-            class="img-fluid"
+            class="rounded mx-auto"
+            id = "folder_images"
           />
           <form action="/tag_image" method="post" class="text-left">
             {% csrf_token %}
@@ -276,7 +292,7 @@
           id="arrowhead_buttons"
           onclick="navigateImage('prev_image')"
         >
-          <img src="static/images/left.png" height="20px" width="20px" />
+          <img src="static/images/left.png"/>
         </button>
         <button
           type="button"
@@ -284,7 +300,7 @@
           id="arrowhead_buttons"
           onclick="navigateImage('next_image')"
         >
-          <img src="static/images/right.png" />
+          <img src="static/images/right.png"/>
         </button>
       </div>
       {% else %}

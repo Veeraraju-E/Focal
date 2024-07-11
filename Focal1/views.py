@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
+from django.http import FileResponse
 from PIL import Image, UnidentifiedImageError
 import piexif
 import json
@@ -160,8 +160,8 @@ def index(request):
 
 def uploaded_file(request, filename):
     global directory
-    print(directory)
-    return HttpResponse(os.path.join(directory, filename))
+    print(os.path.join(directory, filename))
+    return FileResponse(open(os.path.join(directory, filename), 'rb'))
 
 def tag_image(request):
     if request.method == 'POST':
