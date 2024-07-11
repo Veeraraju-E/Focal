@@ -18,7 +18,6 @@ TAGS_FILE = os.path.join(settings.BASE_DIR, 'tags.xlsx')
 JSON_FILE = os.path.join(settings.BASE_DIR, 'image_tags.json')
 UPLOAD_FOLDER = os.path.join(settings.BASE_DIR, 'uploads')
 EXTERNAL_TAGS_FILE = os.path.join(settings.BASE_DIR, 'tags.txt')
-IMAGE_DIR = 'uploaded_images'
 images = []
 current_image_index = 0
 directory = ''
@@ -180,7 +179,7 @@ def tag_image(request):
     return redirect('index')
 
 def get_image_list():
-    return sorted(os.listdir(IMAGE_DIR))
+    return sorted(os.listdir(UPLOAD_FOLDER))
 
 def prev_image(request, image):
     images = get_image_list()
