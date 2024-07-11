@@ -285,23 +285,9 @@
           </form>
         </div>
       </div>
-      <div class="navigation-buttons">
-        <button
-          type="button"
-          class="btn btn-custom"
-          id="arrowhead_buttons"
-          onclick="navigateImage('prev_image')"
-        >
-          <img src="static/images/left.png"/>
-        </button>
-        <button
-          type="button"
-          class="btn btn-custom"
-          id="arrowhead_buttons"
-          onclick="navigateImage('next_image')"
-        >
-          <img src="static/images/right.png"/>
-        </button>
+      <div class="d-flex justify-content-center">
+        <a href="{% url 'prev_image' image %}"><img src="static/images/left.png" alt="Previous Image" /></a>
+        <a href="{% url 'next_image' image %}"><img src="static/images/right.png" alt="Next Image" /></a>
       </div>
       {% else %}
       <p>No images found.</p>
@@ -314,5 +300,18 @@
     <script src="https://cdn.jsdelivr.com/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="static/js/scripts.js"></script>
+    <script>
+        function selectTag(tag) {
+            const tagsField = document.getElementById('tags');
+            const currentTags = tagsField.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            const tagIndex = currentTags.indexOf(tag);
+            if (tagIndex === -1) {
+            currentTags.push(tag);
+            } else {
+            currentTags.splice(tagIndex, 1);
+            }
+            tagsField.value = currentTags.join(', ');
+        }
+      </script>
   </body>
 </html>
