@@ -34,7 +34,7 @@
         overflow-x: hidden;
         max-height: 90vh;
         backdrop-filter: blur(10px);
-        margin: auto auto 10% auto;
+        margin: 10% auto 10% auto;
       }
       img {
         width: 150px;
@@ -45,10 +45,10 @@
       .form-container {
         width: 100%;
         max-width: 600px;
-        padding: 30px;
+        padding: 45px 30px 30px 30px;
         border-radius: 15px;
-        margin: auto;
-        background-color: rgba(255, 255, 255, 0.1);
+        margin: 10% auto;
+        background-color: rgba(0, 0, 0, 0.7);
       }
       .instructions {
         margin-bottom: 20px;
@@ -118,7 +118,7 @@
         left: 0;
         height: calc(100% - 60px);
         overflow-y: auto;
-        width: 200px;
+        width: 16%;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         display: flex;
         flex-direction: column;
@@ -136,8 +136,11 @@
           margin-left: 0;
         }
       }
-      .bg-light{
+      .bg-light {
         background-color: #ddd !important;
+      }
+      .navbar {
+        margin: auto;
       }
     </style>
   </head>
@@ -157,7 +160,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <a class="navbar-brand ml-auto" href="/">
-          <h1 style="color: #0652b6">Project Focal</h1></a
+          <h1 style="color: #0652b6">Project FOCAL</h1></a
         >
         <button
           class="navbar-toggler"
@@ -197,95 +200,98 @@
       <a href="{% url 'find_tags' %}" class="btn ft">Find Tags</a>
     </div>
     {% endif %}
-    <div class="main-content">
-      <div class="container">
-        <div class="form-container">
-          <div class="instructions">
-            <p><strong>Instructions:</strong></p>
-            <p>Upload the root folder with images to be tagged.</p>
-          </div>
-          <form action="{% url 'index' %}" method="post" class="mb-4 d-flex align-items-center">
+    <!-- <div class="main-content"> -->
+    <div class="form-container">
+      <div class="instructions">
+        <p><strong>Instructions:</strong></p>
+        <p>Upload the root folder with images to be tagged.</p>
+      </div>
+      <form
+        action="{% url 'index' %}"
+        method="post"
+        class="mb-4 d-flex align-items-center"
+      >
+        {% csrf_token %}
+        <div class="form-group position-relative flex-grow-1">
+          <label for="directory">Upload Directory:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="directory"
+            name="directory"
+            required
+          />
+          <button
+            type="submit"
+            class="btn btn-custom position-relative"
+            id="Upload"
+          >
+            Upload
+          </button>
+        </div>
+      </form>
+      {% if image %}
+      <div class="image-list">
+        <div class="mb-4">
+          <img
+            src="{% url 'uploaded_file' filename=image %}"
+            alt="Image"
+            class="img-fluid"
+          />
+          <form action="/tag_image" method="post" class="text-left">
             {% csrf_token %}
-            <div class="form-group position-relative flex-grow-1">
-              <label for="directory">Upload Directory:</label>
+            <input type="hidden" name="image_path" value="{{ image }}" />
+            <div class="form-group">
+              <label for="tags">Tags:</label>
               <input
                 type="text"
                 class="form-control"
-                id="directory"
-                name="directory"
+                id="tags"
+                name="tags"
                 required
               />
-              <button
-                type="submit"
-                class="btn btn-custom position-relative"
-                id="Upload"
+            </div>
+            <div class="form-group">
+              <label for="store_option">Store Tags In:</label>
+              <select
+                id="store_option"
+                name="store_option"
+                class="form-control"
+                required
               >
-                Upload
-              </button>
+                <option value="metadata">Image Metadata</option>
+                <option value="text_file">Text File</option>
+              </select>
             </div>
+            <button type="submit" class="btn btn-custom btn-block">
+              Submit Tags
+            </button>
           </form>
-          {% if image %}
-          <div class="image-list">
-            <div class="mb-4">
-              <img
-                src="{% url 'uploaded_file' filename=image %}"
-                alt="Image"
-                class="img-fluid"
-              />
-              <form action="/tag_image" method="post" class="text-left">
-                {% csrf_token %}
-                <input type="hidden" name="image_path" value="{{ image }}" />
-                <div class="form-group">
-                  <label for="tags">Tags:</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="tags"
-                    name="tags"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="store_option">Store Tags In:</label>
-                  <select
-                    id="store_option"
-                    name="store_option"
-                    class="form-control"
-                    required
-                  >
-                    <option value="metadata">Image Metadata</option>
-                    <option value="text_file">Text File</option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-custom btn-block">
-                  Submit Tags
-                </button>
-              </form>
-            </div>
-          </div>
-          <div class="navigation-buttons">
-            <button
-              type="button"
-              class="btn btn-custom"
-              id="arrowhead_buttons"
-              onclick="navigateImage('prev_image')"
-            >
-              <img src="static/images/left.png" />
-            </button>
-            <button
-              type="button"
-              class="btn btn-custom"
-              id="arrowhead_buttons"
-              onclick="navigateImage('next_image')"
-            >
-              <img src="static/images/right.png" />
-            </button>
-          </div>
-          {% else %}
-          <p>No images found.</p>
-          {% endif %}
         </div>
       </div>
+      <div class="navigation-buttons">
+        <button
+          type="button"
+          class="btn btn-custom"
+          id="arrowhead_buttons"
+          onclick="navigateImage('prev_image')"
+        >
+          <img src="static/images/left.png" height="20px" width="20px" />
+        </button>
+        <button
+          type="button"
+          class="btn btn-custom"
+          id="arrowhead_buttons"
+          onclick="navigateImage('next_image')"
+        >
+          <img src="static/images/right.png" />
+        </button>
+      </div>
+      {% else %}
+      <p>No images found.</p>
+      {% endif %}
+      <!-- </div> -->
+      <!-- </div> -->
     </div>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

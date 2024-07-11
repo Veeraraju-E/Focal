@@ -140,7 +140,6 @@ def save_tags_to_excel(image_path, tags):
     df.to_excel(TAGS_FILE, index=False)
     print(f"Successfully saved tags to Excel for image: {image_path}")
 
-# Django views
 # +---------------------------- The views ----------------------------+ 
 def index(request):
     global directory, current_image_index, images
@@ -161,7 +160,8 @@ def index(request):
 
 def uploaded_file(request, filename):
     global directory
-    return HttpResponse(directory + '/' + filename)
+    print(directory)
+    return HttpResponse(os.path.join(directory, filename))
 
 def tag_image(request):
     if request.method == 'POST':
