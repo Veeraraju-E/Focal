@@ -176,6 +176,7 @@ def tag_image(request):
             save_tags_to_excel(absolute_image_path, tags)  # Save tags to Excel when image metadata option is selected
         elif store_option == 'text_file':
             save_text_file(absolute_image_path, tags)
+            print(f"tags : {tags}")
         save_tags_to_json(absolute_image_path, tags)
     return redirect('index')
 
