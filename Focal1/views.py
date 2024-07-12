@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import FileResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_protect
 from PIL import Image, UnidentifiedImageError
 import piexif
 import json
@@ -29,10 +30,10 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 # Load or create the Excel file
 if os.path.exists(TAGS_FILE):
-    df = pd.read_excel(TAGS_FILE)
+    df = pd.read_excel(TAGS_FILE, engine='openpyxl')
 else:
     df = pd.DataFrame(columns=['Image Path', 'Tags'])
-    df.to_excel(TAGS_FILE, index=False)
+    df.to_excel(TAGS_FILE, index=False, engine='openpyxl')
 
 # Load or create the JSON file
 if os.path.exists(JSON_FILE):
@@ -112,18 +113,28 @@ def save_metadata(image_path, tags):
 
 def save_text_file(image_path, tags):
     try:
-        # Generate the text file path with the same base name as the image
-        text_file_path = os.path.splitext(image_path)[0] + '.txt'
-        # Write the tags to the text file
-        with open(text_file_path, 'w') as f:
-            f.write(tags)
-        print(f"Successfully saved text file for image: {text_file_path}")
+
+        if os.path.exists(EXTERNAL_TAGS_FILE):
+            with open(EXTERNAL_TAGS_FILE, 'r') as f:
+                existing_tags = f.read().splitlines()
+        else:
+            existing_tags = []
+
+        new_tags = [tag.strip() for tag in tags.split(',')]
+        all_tags = set(existing_tags + new_tags)
+
+        with open(EXTERNAL_TAGS_FILE, 'w') as f:
+            for tag in sorted(all_tags):
+                f.write(f"{tag}\n")
+        print(f"Successfully saved text file for image: {image_path}")
+
     except Exception as e:
+
         print(f"Error saving text file for {image_path}: {e}")
 
 def save_tags_to_json(image_path, tags):
     global image_tags
-    feature_vector = extract_features(image_path)
+    feature_vector = extract_features(os.path.join(directory, image_path))
     feature_key = hashlib.md5(feature_vector.tobytes()).hexdigest()  # Shortened hash key
     image_tags[feature_key] = tags.split(',')
     with open(JSON_FILE, 'w') as f:
@@ -152,6 +163,8 @@ def index(request):
     ai_tags = generate_tags_for_image(os.path.join(directory, images[current_image_index])) if images else []
     print("in /")
     print(current_image_index)
+    print(f"External Tags : {external_tags}")
+
     return render(request, 'index.html', {
         'image': images[current_image_index] if images else None,
         'directory': directory,
@@ -164,6 +177,7 @@ def uploaded_file(request, filename):
     print(os.path.join(directory, filename))
     return FileResponse(open(os.path.join(directory, filename), 'rb'))
 
+@csrf_protect
 def tag_image(request):
     if request.method == 'POST':
         tags = request.POST.get('tags')
@@ -171,13 +185,16 @@ def tag_image(request):
         store_option = request.POST.get('store_option')
         absolute_image_path = os.path.join(directory, image_path)
         print(f"Received tags: {tags}, store option: {store_option}, for image: {absolute_image_path}")
+
         if store_option == 'metadata':
-            save_metadata(absolute_image_path, tags)
-            save_tags_to_excel(absolute_image_path, tags)  # Save tags to Excel when image metadata option is selected
+            save_metadata(absolute_image_path, tags) 
         elif store_option == 'text_file':
             save_text_file(absolute_image_path, tags)
             print(f"tags : {tags}")
+
+        save_tags_to_excel(absolute_image_path, tags)  # Save tags to Excel when image metadata option is selected
         save_tags_to_json(absolute_image_path, tags)
+
     return redirect('index')
 
 def prev_image(request, image):
