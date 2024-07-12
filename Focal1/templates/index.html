@@ -42,22 +42,27 @@
         margin: 20px auto;
         border-radius: 15px;
       }
+      img[src="static/images/logo.png"] {
+        margin: auto;
+      }
       img[src="{% url 'uploaded_file' filename=image %}"] {
         width: 100%;
         height: auto;
         margin: auto;
       }
       img[src="static/images/left.png"] {
-        width : 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
         margin: 20px;
-        background-color: #0652b6;
+        background-color: #5e89ff;
+        border-radius: 5px;
       }
       img[src="static/images/right.png"] {
-        width : 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
         margin: 20px;
-        background-color: #0652b6;
+        background-color: #5e89ff;
+        border-radius: 5px;
       }
       .form-container {
         width: 100%;
@@ -100,8 +105,8 @@
         background-color: #0652b6;
         transform: scale(1.05);
       }
-      .btn-custom:checked{
-        background-color: #0652b6;
+      .btn-custom:checked {
+        background-color: #071aa3;
         transform: scale(1.05);
       }
       .btn-block {
@@ -133,7 +138,7 @@
       }
       .sidebar {
         background-color: rgba(0, 0, 0, 0.7);
-        padding: 20px;
+        padding: 40px 20px;
         position: fixed;
         top: 60px;
         left: 0;
@@ -144,6 +149,8 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        margin: 40px 0;
+        border-radius: 10px;
       }
       .main-content {
         flex-grow: 1;
@@ -162,6 +169,12 @@
       }
       .navbar {
         margin: auto;
+      }
+      .form-group {
+        margin: 5%;
+      }
+      h4 {
+        margin: 10px 0;
       }
     </style>
   </head>
@@ -258,7 +271,7 @@
             src="{% url 'uploaded_file' filename=image %}"
             alt="Image"
             class="rounded mx-auto"
-            id = "folder_images"
+            id="folder_images"
           />
           <form action="/tag_image" method="post" class="text-left">
             {% csrf_token %}
@@ -285,15 +298,21 @@
                 <option value="text_file">Text File</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-custom btn-block">
-              Submit Tags
-            </button>
+            <div class="form-group">
+              <button type="submit" class="btn btn-custom btn-block">
+                Submit Tags
+              </button>
+            </div>
           </form>
         </div>
       </div>
       <div class="d-flex justify-content-center">
-        <a href="{% url 'prev_image' image %}"><img src="static/images/left.png" alt="Previous Image" /></a>
-        <a href="{% url 'next_image' image %}"><img src="static/images/right.png" alt="Next Image" /></a>
+        <a href="{% url 'prev_image' image %}">
+          <img src="static/images/left.png" alt="Previous Image" />
+        </a>
+        <a href="{% url 'next_image' image %}">
+          <img src="static/images/right.png" alt="Next Image" />
+        </a>
       </div>
       {% else %}
       <p>No images found.</p>
@@ -307,17 +326,20 @@
     <script src="https://stackpath.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="static/js/scripts.js"></script>
     <script>
-        function selectTag(tag) {
-            const tagsField = document.getElementById('tags');
-            const currentTags = tagsField.value.split(',').map(tag => tag.trim()).filter(tag => tag);
-            const tagIndex = currentTags.indexOf(tag);
-            if (tagIndex === -1) {
-            currentTags.push(tag);
-            } else {
-            currentTags.splice(tagIndex, 1);
-            }
-            tagsField.value = currentTags.join(', ');
+      function selectTag(tag) {
+        const tagsField = document.getElementById("tags");
+        const currentTags = tagsField.value
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag);
+        const tagIndex = currentTags.indexOf(tag);
+        if (tagIndex === -1) {
+          currentTags.push(tag);
+        } else {
+          currentTags.splice(tagIndex, 1);
         }
-      </script>
+        tagsField.value = currentTags.join(", ");
+      }
+    </script>
   </body>
 </html>

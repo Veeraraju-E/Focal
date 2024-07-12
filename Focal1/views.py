@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponseRedirect
+from django.urls import reverse
 from PIL import Image, UnidentifiedImageError
 import piexif
 import json
@@ -178,22 +179,17 @@ def tag_image(request):
         save_tags_to_json(absolute_image_path, tags)
     return redirect('index')
 
-def get_image_list():
-    return sorted(os.listdir(UPLOAD_FOLDER))
-
 def prev_image(request, image):
-    images = get_image_list()
-    current_index = images.index(image)
-    previous_index = (current_index - 1) % len(images)
-    previous_image = images[previous_index]
-    return redirect('index', image=previous_image)
+    global current_image_index
+    current_image_index = (current_image_index - 1) % len(images)
+    previous_image = images[current_image_index]
+    return HttpResponseRedirect(reverse('index'))
 
 def next_image(request, image):
-    images = get_image_list()
-    current_index = images.index(image)
-    next_index = (current_index + 1) % len(images)
-    next_image = images[next_index]
-    return redirect('index', image=next_image)
+    global current_image_index
+    current_image_index = (current_image_index + 1) % len(images)
+    next_image = images[current_image_index]
+    return HttpResponseRedirect(reverse('index'))
 
 def find_tags(request):
     assigned_tags = []
