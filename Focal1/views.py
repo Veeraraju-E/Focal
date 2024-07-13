@@ -116,7 +116,7 @@ def save_metadata(image_path, tags):
         print(f"Error processing image {image_path}: {e}")
 
 
-def save_text_file(image_path, tags):
+def save_tags_to_text_file(image_path, tags):
 
     new_tags = [tag.strip() for tag in tags.split(',')]
 
@@ -155,12 +155,12 @@ def index(request):
             current_image_index = 0
     ai_tags = generate_tags_for_image(os.path.join(directory, images[current_image_index])) if images else []
     print("in /")
-    print(current_image_index)
+    # print(current_image_index)
     external_tags = dict(sorted(external_tags.items(), key=lambda item : item[1], reverse=True))
     external_tags_list = list(external_tags.keys())
     if len(external_tags_list) > 9:
         external_tags_list = external_tags_list[:10]
-    print(f"external tags dict : {external_tags}")
+    # print(f"external tags dict : {external_tags}")
     return render(request, 'index.html', {
         'image': images[current_image_index] if images else None,
         'directory': directory,
@@ -170,7 +170,7 @@ def index(request):
 
 def uploaded_file(request, filename):
     global directory
-    print(os.path.join(directory, filename))
+    # print(os.path.join(directory, filename))
     return FileResponse(open(os.path.join(directory, filename), 'rb'))
 
 @csrf_protect
@@ -183,12 +183,9 @@ def tag_image(request):
         print(f"Received tags: {tags}, store option: {store_option}, for image: {absolute_image_path}")
 
         if store_option == 'metadata':
-            save_metadata(absolute_image_path, tags) 
-        elif store_option == 'text_file':
-            save_text_file(absolute_image_path, tags)
-            print(f"tags : {tags}")
-
-        print(absolute_image_path)
+            save_metadata(absolute_image_path, tags)
+        print(f"tags : {tags}")
+        save_tags_to_text_file(absolute_image_path, tags)
         save_tags_to_excel(absolute_image_path, tags)
         save_tags_to_json(absolute_image_path, tags)
 

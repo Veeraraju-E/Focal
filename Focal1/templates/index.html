@@ -176,6 +176,21 @@
       h4 {
         margin: 10px 0;
       }
+      ::-webkit-scrollbar {
+        width: 12px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: grey;
+        border-radius: 10px;
+        transition: background-color 0.3s;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #4a4a4a;
+      }
+      ::-webkit-scrollbar-track {
+        background-color: transparent;
+        border-radius: 10px;
+      }
     </style>
   </head>
   <body>
@@ -247,7 +262,7 @@
       >
         {% csrf_token %}
         <div class="form-group position-relative flex-grow-1">
-          <label for="directory">Upload Directory:</label>
+          <label for="directory">Upload Folder:</label>
           <input
             type="text"
             class="form-control"
@@ -255,10 +270,27 @@
             name="directory"
             required
           />
+          <input
+            type="file"
+            class="form-control-file"
+            id="fileUpload"
+            webkitdirectory
+            directory
+            multiple
+            style="display: none"
+          />
+          <button
+            type="button"
+            class="btn btn-custom"
+            onclick="document.getElementById('fileUpload').click();"
+          >
+            Choose Folder
+          </button>
           <button
             type="submit"
-            class="btn btn-custom position-relative"
-            id="Upload"
+            class="btn btn-custom ml-2"
+            style="margin-left: 10px; margin-top: 10px"
+            id="upload"
           >
             Upload
           </button>
@@ -277,7 +309,7 @@
             {% csrf_token %}
             <input type="hidden" name="image_path" value="{{ image }}" />
             <div class="form-group">
-              <label for="tags">Tags:</label>
+              <label for="tags">Tag the image:</label>
               <input
                 type="text"
                 class="form-control"
@@ -287,15 +319,15 @@
               />
             </div>
             <div class="form-group">
-              <label for="store_option">Store Tags In:</label>
+              <label for="store_option">Save Tags In:</label>
               <select
                 id="store_option"
                 name="store_option"
                 class="form-control"
                 required
               >
+                <option value="text_file">Save</option>
                 <option value="metadata">Image Metadata</option>
-                <option value="text_file">Text File</option>
               </select>
             </div>
             <div class="form-group">
@@ -354,6 +386,16 @@
           }
         });
       }
+    </script>
+    <script>
+      const fileInput = document.getElementById("fileUpload");
+      const textInput = document.getElementById("directory");
+
+      fileInput.addEventListener("change", (event) => {
+        const folderPath =
+          event.target.files[0].webkitRelativePath.split("/")[0];
+        textInput.value = folderPath;
+      });
     </script>
   </body>
 </html>
