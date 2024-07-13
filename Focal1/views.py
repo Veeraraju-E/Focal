@@ -19,10 +19,10 @@ import urllib.request
 TAGS_FILE = os.path.join(settings.BASE_DIR, 'tags.xlsx')
 JSON_FILE = os.path.join(settings.BASE_DIR, 'image_tags.json')
 UPLOAD_FOLDER = os.path.join(settings.BASE_DIR, 'uploads')
-EXTERNAL_TAGS_FILE = os.path.join(settings.BASE_DIR, 'tags.txt')
 images = []
 current_image_index = 0
 directory = ''
+external_tags = {}
 
 # Ensure upload folder exists
 if not os.path.exists(UPLOAD_FOLDER):
@@ -34,6 +34,10 @@ if os.path.exists(TAGS_FILE):
 else:
     df = pd.DataFrame(columns=['Image Path', 'Tags'])
     df.to_excel(TAGS_FILE, index=False, engine='openpyxl')
+
+for row in df.iloc[:, 1]:
+    for tag in str(row).split(','):
+        external_tags[tag] = external_tags.get(tag, 0) + 1
 
 # Load or create the JSON file
 if os.path.exists(JSON_FILE):
@@ -51,14 +55,14 @@ model = resnet50(pretrained=True)
 model.eval()
 
 # Load external tags
-def load_external_tags():
-    if os.path.exists(EXTERNAL_TAGS_FILE):
-        with open(EXTERNAL_TAGS_FILE, 'r') as f:
-            tags = f.read().splitlines()
-        return tags
-    return []
+# def load_external_tags():
+#     if os.path.exists(EXTERNAL_TAGS_FILE):
+#         with open(EXTERNAL_TAGS_FILE, 'r') as f:
+#             tags = f.read().splitlines()
+#         return tags
+#     return []
 
-external_tags = load_external_tags()
+# external_tags = load_external_tags()
 
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'}
@@ -111,32 +115,21 @@ def save_metadata(image_path, tags):
     except Exception as e:
         print(f"Error processing image {image_path}: {e}")
 
+
 def save_text_file(image_path, tags):
-    try:
 
-        if os.path.exists(EXTERNAL_TAGS_FILE):
-            with open(EXTERNAL_TAGS_FILE, 'r') as f:
-                existing_tags = f.read().splitlines()
-        else:
-            existing_tags = []
+    new_tags = [tag.strip() for tag in tags.split(',')]
 
-        new_tags = [tag.strip() for tag in tags.split(',')]
-        all_tags = set(existing_tags + new_tags)
+    for tag in new_tags:
+        external_tags[tag] = external_tags.get(tag, 0) + 1
 
-        with open(EXTERNAL_TAGS_FILE, 'w') as f:
-            for tag in sorted(all_tags):
-                f.write(f"{tag}\n")
-        print(f"Successfully saved text file for image: {image_path}")
-
-    except Exception as e:
-
-        print(f"Error saving text file for {image_path}: {e}")
 
 def save_tags_to_json(image_path, tags):
     global image_tags
     feature_vector = extract_features(os.path.join(directory, image_path))
     feature_key = hashlib.md5(feature_vector.tobytes()).hexdigest()  # Shortened hash key
     image_tags[feature_key] = tags.split(',')
+    print(f"In save_tags_to_json, directory : {directory}, image_path : {image_path}")
     with open(JSON_FILE, 'w') as f:
         json.dump(image_tags, f)
     print(f"Successfully saved tags to JSON for image: {image_path}")
@@ -154,7 +147,7 @@ def save_tags_to_excel(image_path, tags):
 
 # +---------------------------- The views ----------------------------+ 
 def index(request):
-    global directory, current_image_index, images
+    global directory, current_image_index, images, external_tags
     if request.method == 'POST':
         directory = request.POST.get('directory')
         if os.path.isdir(directory):
@@ -163,13 +156,16 @@ def index(request):
     ai_tags = generate_tags_for_image(os.path.join(directory, images[current_image_index])) if images else []
     print("in /")
     print(current_image_index)
-    print(f"External Tags : {external_tags}")
-
+    external_tags = dict(sorted(external_tags.items(), key=lambda item : item[1], reverse=True))
+    external_tags_list = list(external_tags.keys())
+    if len(external_tags_list) > 9:
+        external_tags_list = external_tags_list[:10]
+    print(f"external tags dict : {external_tags}")
     return render(request, 'index.html', {
         'image': images[current_image_index] if images else None,
         'directory': directory,
         'ai_tags': ai_tags,
-        'external_tags': external_tags,
+        'external_tags': external_tags_list,
     })
 
 def uploaded_file(request, filename):
@@ -192,7 +188,8 @@ def tag_image(request):
             save_text_file(absolute_image_path, tags)
             print(f"tags : {tags}")
 
-        save_tags_to_excel(absolute_image_path, tags)  # Save tags to Excel when image metadata option is selected
+        print(absolute_image_path)
+        save_tags_to_excel(absolute_image_path, tags)
         save_tags_to_json(absolute_image_path, tags)
 
     return redirect('index')
@@ -200,13 +197,13 @@ def tag_image(request):
 def prev_image(request, image):
     global current_image_index
     current_image_index = (current_image_index - 1) % len(images)
-    previous_image = images[current_image_index]
+    # previous_image = images[current_image_index]
     return HttpResponseRedirect(reverse('index'))
 
 def next_image(request, image):
     global current_image_index
     current_image_index = (current_image_index + 1) % len(images)
-    next_image = images[current_image_index]
+    # next_image = images[current_image_index]
     return HttpResponseRedirect(reverse('index'))
 
 def find_tags(request):
@@ -246,5 +243,5 @@ def get_tags_for_image(image_path):
     feature_key = hashlib.md5(feature_vector.tobytes()).hexdigest()  # Shortened hash key
     assigned_tags = image_tags.get(feature_key, [])
     predicted_tags = generate_tags_for_image(image_path)
-    unassigned_tags = [tag for tag in external_tags if tag not in assigned_tags]
+    unassigned_tags = [tag for tag in list(external_tags.keys()) if tag not in assigned_tags]
     return assigned_tags, unassigned_tags

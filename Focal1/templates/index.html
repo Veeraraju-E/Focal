@@ -340,6 +340,20 @@
         }
         tagsField.value = currentTags.join(", ");
       }
+      function updateSelectedTags() {
+        let tagsInput = document.getElementById("tags");
+        let selectedTags = tagsInput.value.split(",").filter(Boolean);
+        let tagOptions = document.querySelectorAll(".tag-option");
+        tagOptions.forEach((option) => {
+          if (selectedTags.includes(option.textContent)) {
+            option.style.backgroundColor = "#071aa3";
+            option.style.borderColor = "#071aa3";
+          } else {
+            option.style.backgroundColor = "#5e89ff";
+            option.style.borderColor = "#5e89ff";
+          }
+        });
+      }
     </script>
   </body>
 </html>
