@@ -219,7 +219,7 @@
         margin: 0%;
       }
       .bg-light {
-        background-color: rgba(255, 255, 255, 0.2) !important;
+        background-color: #ddd !important;
       }
       .form-group.position-relative {
         position: relative;
@@ -235,6 +235,51 @@
     </style>
   </head>
   <body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-light">
+      <img src="static/images/logo.png" id="logo" />
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <a class="navbar-brand ml-auto" href="/">
+          <h1 style="color: #0652b6"><strong>Project Focal</strong></h1></a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a
+              href="/"
+              class="nav-link"
+              style="
+                color: black;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                  'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+                  'Helvetica Neue', sans-serif;
+              "
+              >Home</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
     <div class="container">
       <h1>Find Tags</h1>
       <div class="form-container">
@@ -243,6 +288,7 @@
           <p>Upload the root folder with images to find tags.</p>
         </div>
         <form action="/find_tags" method="post" class="mb-4">
+          {% csrf_token %}
           <div class="form-group">
             <label for="directory">Upload Directory:</label>
             <input
