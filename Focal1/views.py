@@ -169,7 +169,7 @@ def index(request):
                 existing_tags = df.iloc[i][1]
     except:
         pass
-    print(os.path.join(directory, images[current_image_index]))
+    # print(os.path.join(directory, images[current_image_index]))
     return render(request, 'index.html', {
         'image': images[current_image_index] if images else None,
         'directory': directory,

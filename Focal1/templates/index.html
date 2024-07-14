@@ -36,6 +36,13 @@
         backdrop-filter: blur(10px);
         margin: 10% auto;
       }
+      .scroll-container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+      }
       img {
         width: 150px;
         height: 75px;
@@ -142,22 +149,21 @@
       .sidebar {
         background-color: rgba(0, 0, 0, 0.7);
         padding: 40px 20px;
-        position: fixed;
-        top: 60px;
-        left: 0;
-        height: calc(100% - 60px);
+        height: 100vh;
         overflow-y: auto;
         width: 16%;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        margin: 40px 0;
         border-radius: 10px;
       }
       .main-content {
         flex-grow: 1;
         margin-top: auto;
+        overflow-y: auto;
+        width: 84%;
+        padding: 20px;
       }
       @media (max-width: 768px) {
         .sidebar {
@@ -287,74 +293,75 @@
       </div>
     </nav>
     {% if image %}
-    <div class="sidebar">
-      <h3>Tags Menu</h3>
-      <div id="tag-options">
-        <h4>Suggested</h4>
-        {% for tag in ai_tags %}
-        <span class="tag-option" onclick="selectTag('{{ tag }}')"
-          >{{ tag }}</span
-        >
-        {% endfor %}
-        <h4>Existing</h4>
-        {% for tag in external_tags %}
-        <span class="tag-option" onclick="selectTag('{{ tag }}')"
-          >{{ tag }}</span
-        >
-        {% endfor %}
-      </div>
-      <a href="{% url 'find_tags' %}" class="btn ft">Find Tags</a>
-    </div>
-    {% endif %}
-    <div class="form-container">
-      <div class="instructions">
-        <p><strong>Instructions:</strong></p>
-        <p>Enter the entire path of root folder with the images.</p>
-      </div>
-      <form
-        action="{% url 'index' %}"
-        method="post"
-        class="mb-4 d-flex align-items-center"
-        enctype="multipart/form-data"
-      >
-        {% csrf_token %}
-        <div class="form-group position-relative flex-grow-1">
-          <label for="directory">Enter the path:</label>
-          <input
-            type="text"
-            class="form-control mr-sm-2"
-            id="directory"
-            name="directory"
-            placeholder="e.g. C:\\Users\\Downloads"
-            required
-          />
-          <button
-            type="submit"
-            class="btn btn-outline-success my-2 my-sm-0"
-            id="uploadButton"
+    <div class="scroll-container">
+      <div class="sidebar">
+        <h3>Tags Menu</h3>
+        <div id="tag-options">
+          <h4>Suggested</h4>
+          {% for tag in ai_tags %}
+          <span class="tag-option" onclick="selectTag('{{ tag }}')"
+            >{{ tag }}</span
           >
-            Submit
-          </button>
+          {% endfor %}
+          <h4>Existing</h4>
+          {% for tag in external_tags %}
+          <span class="tag-option" onclick="selectTag('{{ tag }}')"
+            >{{ tag }}</span
+          >
+          {% endfor %}
         </div>
-      </form>
-      <script>
-        document
-          .getElementById("selectFolderButton")
-          .addEventListener("click", function () {
-            document.getElementById("folderSelector").click();
-          });
+        <a href="{% url 'find_tags' %}" class="btn ft">Find Tags</a>
+      </div>
+      {% endif %}
+      <div class="form-container">
+        <div class="instructions">
+          <p><strong>Instructions:</strong></p>
+          <p>Enter the entire path of root folder with the images.</p>
+        </div>
+        <form
+          action="{% url 'index' %}"
+          method="post"
+          class="mb-4 d-flex align-items-center"
+          enctype="multipart/form-data"
+        >
+          {% csrf_token %}
+          <div class="form-group position-relative flex-grow-1">
+            <label for="directory">Enter the path:</label>
+            <input
+              type="text"
+              class="form-control mr-sm-2"
+              id="directory"
+              name="directory"
+              placeholder="e.g. C:\\Users\\Downloads"
+              required
+            />
+            <button
+              type="submit"
+              class="btn btn-outline-success my-2 my-sm-0"
+              id="uploadButton"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+        <script>
+          document
+            .getElementById("selectFolderButton")
+            .addEventListener("click", function () {
+              document.getElementById("folderSelector").click();
+            });
 
-        document
-          .getElementById("folderSelector")
-          .addEventListener("change", function (event) {
-            const directoryInput = document.getElementById("directory");
-            const path = this.files[0].webkitRelativePath;
-            const folder = path.substring(0, path.indexOf("/"));
-            directoryInput.value = window.location.origin + "/" + folder;
-          });
-      </script>
-      {% if image %}
-      <div class="image-list">
+          document
+            .getElementById("folderSelector")
+            .addEventListener("change", function (event) {
+              const directoryInput = document.getElementById("directory");
+              const path = this.files[0].webkitRelativePath;
+              const folder = path.substring(0, path.indexOf("/"));
+              directoryInput.value = window.location.origin + "/" + folder;
+            });
+        </script>
+        {% if image %}
+        <!-- <div class="image-list">
         <div class="mb-4">
           <img
             src="{% url 'uploaded_file' filename=image %}"
@@ -408,11 +415,71 @@
             </div>
           </form>
         </div>
+      </div> -->
+        <div class="container main-content">
+          <div class="row">
+            <div class="col-12">
+              <img
+                src="{% url 'uploaded_file' filename=image %}"
+                alt="Image"
+                class="rounded mx-auto"
+                id="folder_images"
+              />
+            </div>
+            <div class="col-12">
+              <form action="/tag_image" method="post" class="text-left">
+                {% csrf_token %}
+                <input type="hidden" name="image_id" value="{{ image }}" />
+                <div id="tag-container"></div>
+                <div class="form-group">
+                  <label for="tags">Tag the image:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="tags"
+                    name="tags"
+                    value="{{ existing_tags }}"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="store_option">Save Tags In:</label>
+                  <select
+                    id="store_option"
+                    name="store_option"
+                    class="form-control"
+                    required
+                  >
+                    <option value="text_file">Regular</option>
+                    <option value="metadata">Metadata</option>
+                  </select>
+                </div>
+                <div class="btn-group-container">
+                  <button type="button" class="btn btn-nav arrowhead_buttons">
+                    <a href="{% url 'prev_image' image %}"
+                      ><img src="static/images/left.png"
+                    /></a>
+                  </button>
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-custom btn-submit"
+                  >
+                    Save
+                  </button>
+                  <button type="button" class="btn btn-nav arrowhead_buttons">
+                    <a href="{% url 'next_image' image %}"
+                      ><img src="static/images/right.png"
+                    /></a>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <p>No images found.</p>
+        {% endif %}
       </div>
-
-      {% else %}
-      <p>No images found.</p>
-      {% endif %}
     </div>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
