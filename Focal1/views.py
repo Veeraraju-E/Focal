@@ -146,21 +146,27 @@ def save_tags_to_excel(image_path, tags):
     print(f"Successfully saved tags to Excel for image: {image_path}")
 
 # +---------------------------- The views ----------------------------+ 
-def index(request):
+def home(request):
+    print("in /")
     global directory, current_image_index, images, external_tags
     if request.method == 'POST':
         directory = request.POST.get('directory')
         if os.path.isdir(directory):
             load_images(directory)
             current_image_index = 0
+            return redirect("index")
+    return render(request, "home.html", {})
+
+def index(request):
+    global directory, current_image_index, images, external_tags
     ai_tags = generate_tags_for_image(os.path.join(directory, images[current_image_index])) if images else []
-    print("in /")
-    # print(current_image_index)
+    print("in index")
+    print(current_image_index)
     external_tags = dict(sorted(external_tags.items(), key=lambda item : item[1], reverse=True))
     external_tags_list = list(external_tags.keys())
     if len(external_tags_list) > 9:
         external_tags_list = external_tags_list[:10]
-    # print(f"external tags dict : {external_tags}")
+    print(f"external tags dict : {external_tags}")
     existing_tags = []
     try:
         # Retrieve existing tags for image
@@ -185,6 +191,7 @@ def uploaded_file(request, filename):
 
 @csrf_protect
 def tag_image(request):
+    global directory
     if request.method == 'POST':
         tags = request.POST.get('tags')
         image_path = request.POST.get('image_path')
