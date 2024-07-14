@@ -161,11 +161,21 @@ def index(request):
     if len(external_tags_list) > 9:
         external_tags_list = external_tags_list[:10]
     # print(f"external tags dict : {external_tags}")
+    existing_tags = []
+    try:
+        # Retrieve existing tags for image
+        for i, row in enumerate(df.iloc[:, 0]):
+            if os.path.join(directory, images[current_image_index]) == row:
+                existing_tags = df.iloc[i][1]
+    except:
+        pass
+    print(os.path.join(directory, images[current_image_index]))
     return render(request, 'index.html', {
         'image': images[current_image_index] if images else None,
         'directory': directory,
         'ai_tags': ai_tags,
         'external_tags': external_tags_list,
+        'existing_tags': existing_tags
     })
 
 def uploaded_file(request, filename):

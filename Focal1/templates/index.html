@@ -34,7 +34,7 @@
         overflow-x: hidden;
         max-height: 90vh;
         backdrop-filter: blur(10px);
-        margin: 10% auto 10% auto;
+        margin: 10% auto;
       }
       img {
         width: 150px;
@@ -55,14 +55,14 @@
         height: 30px;
         margin: 20px;
         background-color: #5e89ff;
-        border-radius: 5px;
+        border-radius: 10px;
       }
       img[src="static/images/right.png"] {
         width: 30px;
         height: 30px;
         margin: 20px;
         background-color: #5e89ff;
-        border-radius: 5px;
+        border-radius: 10px;
       }
       .form-container {
         width: 100%;
@@ -76,17 +76,11 @@
         margin-bottom: 20px;
         font-size: 1.2em;
       }
-      .arrowhead_buttons {
-        background-color: #aaa;
-        border: none;
-        margin: 0;
-        padding: 0;
-        width: 25%;
-        border-radius: 25%;
-        transition: background-color 0.3s, transform 0.3s;
-      }
       .btn-custom {
         background-color: #5e89ff;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
         color: #fff;
         border: none;
         margin-top: 2%;
@@ -113,12 +107,21 @@
         width: 100%;
       }
       label {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
         font-weight: bold;
       }
       input,
       select,
       button {
         border-radius: 25px;
+      }
+      @media (min-width: 576px) {
+        .mt-sm-0,
+        .my-sm-0 {
+          margin-top: 20px !important;
+        }
       }
       .tag-option {
         display: block;
@@ -169,12 +172,26 @@
       }
       .navbar {
         margin: auto;
+        transition: top 0.6s;
       }
       .form-group {
         margin: 5%;
       }
+      h1,
+      h3,
+      h4,
+      p {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
+      }
       h4 {
         margin: 10px 0;
+      }
+      span {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
       }
       ::-webkit-scrollbar {
         width: 12px;
@@ -190,6 +207,36 @@
       ::-webkit-scrollbar-track {
         background-color: transparent;
         border-radius: 10px;
+      }
+      .tag-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+      .navbar-hidden {
+        top: -100px !important;
+      }
+      .btn-group-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+      }
+      .btn-submit {
+        flex: 2;
+      }
+      .btn-nav {
+        flex: 1;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      .btn-outline-custom {
+        margin: auto;
       }
     </style>
   </head>
@@ -209,7 +256,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <a class="navbar-brand ml-auto" href="/">
-          <h1 style="color: #0652b6">Project FOCAL</h1></a
+          <h1 style="color: #0652b6"><strong>Project Focal</strong></h1></a
         >
         <button
           class="navbar-toggler"
@@ -224,7 +271,17 @@
         </button>
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <a href="/" class="nav-link" style="color: black">Home</a>
+            <a
+              href="/"
+              class="nav-link"
+              style="
+                color: black;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                  'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+                  'Helvetica Neue', sans-serif;
+              "
+              >Home</a
+            >
           </li>
         </ul>
       </div>
@@ -249,53 +306,53 @@
       <a href="{% url 'find_tags' %}" class="btn ft">Find Tags</a>
     </div>
     {% endif %}
-    <!-- <div class="main-content"> -->
     <div class="form-container">
       <div class="instructions">
         <p><strong>Instructions:</strong></p>
-        <p>Upload the root folder with images to be tagged.</p>
+        <p>Enter the entire path of root folder with the images.</p>
       </div>
       <form
         action="{% url 'index' %}"
         method="post"
         class="mb-4 d-flex align-items-center"
+        enctype="multipart/form-data"
       >
         {% csrf_token %}
         <div class="form-group position-relative flex-grow-1">
-          <label for="directory">Upload Folder:</label>
+          <label for="directory">Enter the path:</label>
           <input
             type="text"
-            class="form-control"
+            class="form-control mr-sm-2"
             id="directory"
             name="directory"
+            placeholder="e.g. C:\\Users\\Downloads"
             required
           />
-          <input
-            type="file"
-            class="form-control-file"
-            id="fileUpload"
-            webkitdirectory
-            directory
-            multiple
-            style="display: none"
-          />
-          <button
-            type="button"
-            class="btn btn-custom"
-            onclick="document.getElementById('fileUpload').click();"
-          >
-            Choose Folder
-          </button>
           <button
             type="submit"
-            class="btn btn-custom ml-2"
-            style="margin-left: 10px; margin-top: 10px"
-            id="upload"
+            class="btn btn-outline-success my-2 my-sm-0"
+            id="uploadButton"
           >
-            Upload
+            Submit
           </button>
         </div>
       </form>
+      <script>
+        document
+          .getElementById("selectFolderButton")
+          .addEventListener("click", function () {
+            document.getElementById("folderSelector").click();
+          });
+
+        document
+          .getElementById("folderSelector")
+          .addEventListener("change", function (event) {
+            const directoryInput = document.getElementById("directory");
+            const path = this.files[0].webkitRelativePath;
+            const folder = path.substring(0, path.indexOf("/"));
+            directoryInput.value = window.location.origin + "/" + folder;
+          });
+      </script>
       {% if image %}
       <div class="image-list">
         <div class="mb-4">
@@ -315,6 +372,7 @@
                 class="form-control"
                 id="tags"
                 name="tags"
+                value="{{ existing_tags }}"
                 required
               />
             </div>
@@ -326,31 +384,35 @@
                 class="form-control"
                 required
               >
-                <option value="text_file">Save</option>
-                <option value="metadata">Image Metadata</option>
+                <option value="text_file">Regular</option>
+                <option value="metadata">Metadata</option>
               </select>
             </div>
-            <div class="form-group">
-              <button type="submit" class="btn btn-custom btn-block">
-                Submit Tags
+            <div class="btn-group-container">
+              <button type="button" class="btn btn-nav arrowhead_buttons">
+                <a href="{% url 'prev_image' image %}"
+                  ><img src="static/images/left.png"
+                /></a>
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary btn-custom btn-submit"
+              >
+                Save
+              </button>
+              <button type="button" class="btn btn-nav arrowhead_buttons">
+                <a href="{% url 'next_image' image %}"
+                  ><img src="static/images/right.png"
+                /></a>
               </button>
             </div>
           </form>
         </div>
       </div>
-      <div class="d-flex justify-content-center">
-        <a href="{% url 'prev_image' image %}">
-          <img src="static/images/left.png" alt="Previous Image" />
-        </a>
-        <a href="{% url 'next_image' image %}">
-          <img src="static/images/right.png" alt="Next Image" />
-        </a>
-      </div>
+
       {% else %}
       <p>No images found.</p>
       {% endif %}
-      <!-- </div> -->
-      <!-- </div> -->
     </div>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -386,16 +448,15 @@
           }
         });
       }
-    </script>
-    <script>
-      const fileInput = document.getElementById("fileUpload");
-      const textInput = document.getElementById("directory");
-
-      fileInput.addEventListener("change", (event) => {
-        const folderPath =
-          event.target.files[0].webkitRelativePath.split("/")[0];
-        textInput.value = folderPath;
-      });
+      window.onscroll = function () {
+        var navbar = document.querySelector(".navbar");
+        var container = document.querySelector(".container");
+        if (window.pageYOffset >= container.offsetTop) {
+          navbar.classList.add("navbar-hidden");
+        } else {
+          navbar.classList.remove("navbar-hidden");
+        }
+      };
     </script>
   </body>
 </html>
