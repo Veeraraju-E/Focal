@@ -9,6 +9,10 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+    />
     <!-- External CSS -->
     <style>
       body {
@@ -57,7 +61,7 @@
         max-width: 800px;
         padding: 45px 30px 30px 30px;
         border-radius: 15px;
-        margin: 10% 5%;
+        margin: 10% 5% 5% 5%;
         background-color: rgba(0, 0, 0, 0.7);
       }
       .instructions {
@@ -72,14 +76,6 @@
         color: #fff;
         border: none;
         margin-top: 2%;
-        border-radius: 25px;
-        transition: background-color 0.3s, transform 0.3s;
-      }
-      .ft {
-        background-color: #1b8431;
-        color: #fff;
-        border: none;
-        margin: 5px;
         border-radius: 25px;
         transition: background-color 0.3s, transform 0.3s;
       }
@@ -101,44 +97,11 @@
         font-weight: bold;
       }
       input,
-      select,
       button {
         border-radius: 25px;
       }
-      @media (min-width: 576px) {
-        .mt-sm-0,
-        .my-sm-0 {
-          margin-top: 20px !important;
-        }
-      }
-      .tag-option {
-        display: block;
-        padding: 10px;
-        margin: 5px;
-        border: 1px solid #5e89ff;
-        border-radius: 25px;
-        background-color: #5e89ff;
-        color: #fff;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.3s;
-      }
-      .tag-option:hover {
-        background-color: #071aa3;
-        border-color: #ffffff;
-        transform: scale(1.05);
-      }
-      .sidebar {
-        background-color: rgba(0, 0, 0, 0.7);
-        margin: 10% 0;
-        padding: 40px 20px;
-        height: 100vh;
-        overflow-y: auto;
-        width: 16%;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        border-radius: 10px;
+      .my-sm-0 {
+        margin-top: 20px !important;
       }
       .main-content {
         flex-grow: 1;
@@ -148,9 +111,6 @@
         padding: 20px;
       }
       @media (max-width: 768px) {
-        .sidebar {
-          display: none;
-        }
         .main-content {
           margin-left: 0;
         }
@@ -166,16 +126,11 @@
         margin: 5%;
       }
       h1,
-      h3,
-      h4,
-      h5,
-      p {
+      p,
+      :placeholder-shown {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
           Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
           sans-serif;
-      }
-      h4 {
-        margin: 10px 0;
       }
       span {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -197,32 +152,8 @@
         background-color: transparent;
         border-radius: 10px;
       }
-      .tag-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .nav-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-      }
       .navbar-hidden {
         top: -100px !important;
-      }
-      .btn-group-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-      }
-      .btn-submit {
-        flex: 2;
-      }
-      .btn-nav {
-        flex: 1;
-        margin-left: 10px;
-        margin-right: 10px;
       }
       .btn-outline-custom {
         margin: auto;
@@ -279,6 +210,19 @@
                   'Helvetica Neue', sans-serif;
               "
               >Home</a
+            >
+          </li>
+          <li class="nav-item active">
+            <a
+              href="/explore"
+              class="nav-link"
+              style="
+                color: black;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                  'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+                  'Helvetica Neue', sans-serif;
+              "
+              >Find Tags</a
             >
           </li>
         </ul>
@@ -338,6 +282,10 @@
     <script src="https://cdn.jsdelivr.com/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="static/js/scripts.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+    />
     <script>
       window.onscroll = function () {
         var navbar = document.querySelector(".navbar");

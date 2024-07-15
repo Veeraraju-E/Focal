@@ -29,15 +29,19 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 # Load or create the Excel file
-if os.path.exists(TAGS_FILE):
-    df = pd.read_excel(TAGS_FILE, engine='openpyxl')
-else:
-    df = pd.DataFrame(columns=['Image Path', 'Tags'])
-    df.to_excel(TAGS_FILE, index=False, engine='openpyxl')
+def load_tags_from_excel():
+    if os.path.exists(TAGS_FILE):
+        df = pd.read_excel(TAGS_FILE, engine='openpyxl')
+    else:
+        df = pd.DataFrame(columns=['Image Path', 'Tags'])
+        df.to_excel(TAGS_FILE, index=False, engine='openpyxl')
 
-for row in df.iloc[:, 1]:
-    for tag in str(row).split(','):
-        external_tags[tag] = external_tags.get(tag, 0) + 1
+    for row in df.iloc[:, 1]:
+        for tag in str(row).split(','):
+            external_tags[tag] = external_tags.get(tag, 0) + 1
+    return df
+
+df = load_tags_from_excel()
 
 # Load or create the JSON file
 if os.path.exists(JSON_FILE):
@@ -170,6 +174,7 @@ def index(request):
     existing_tags = []
     try:
         # Retrieve existing tags for image
+        df = load_tags_from_excel()
         for i, row in enumerate(df.iloc[:, 0]):
             if os.path.join(directory, images[current_image_index]) == row:
                 existing_tags = df.iloc[i][1]
@@ -220,12 +225,12 @@ def next_image(request, image):
     # next_image = images[current_image_index]
     return HttpResponseRedirect(reverse('index'))
 
-def find_tags(request):
+def explore(request):
     assigned_tags = []
     unassigned_tags = []
     if request.method == 'POST':
         if 'file' not in request.FILES:
-            return render(request, 'find_tags.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
+            return render(request, 'explore.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
         file = request.FILES['file']
         if file:
             fs = FileSystemStorage()
@@ -233,22 +238,22 @@ def find_tags(request):
             uploaded_file_url = fs.url(filename)
             file_path = os.path.join(settings.MEDIA_ROOT, filename)
             assigned_tags, unassigned_tags = get_tags_for_image(file_path)
-            return render(request, 'find_tags.html', {
+            return render(request, 'explore.html', {
                 'filename': filename,
                 'assigned_tags': assigned_tags,
                 'unassigned_tags': unassigned_tags,
             })
-    return render(request, 'find_tags.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
+    return render(request, 'explore.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
 
-def update_tags(request):
-    if request.method == 'POST':
-        tags = request.POST.get('tags')
-        filename = request.POST.get('filename')
-        file_path = os.path.join(settings.MEDIA_ROOT, filename)
-        save_tags_to_json(file_path, tags)
-        save_tags_to_excel(file_path, tags)  # Save updated tags to Excel
-        return redirect('find_tags')
-    return redirect('find_tags')
+# def update_tags(request):
+#     if request.method == 'POST':
+#         tags = request.POST.get('tags')
+#         filename = request.POST.get('filename')
+#         file_path = os.path.join(settings.MEDIA_ROOT, filename)
+#         save_tags_to_json(file_path, tags)
+#         save_tags_to_excel(file_path, tags)  # Save updated tags to Excel
+#         return redirect('explore')
+#     return redirect('explore')
 
 # Helper function
 
