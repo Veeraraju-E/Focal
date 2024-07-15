@@ -237,9 +237,7 @@
         gap: 10px;
       }
       .btn-nav {
-        flex: 1;
-        margin-left: 10px;
-        margin-right: 10px;
+        padding: 6px 12px;
       }
       .btn-outline-custom {
         margin: auto;
@@ -370,23 +368,29 @@
                     class="btn btn-primary btn-custom btn-submit"
                     id="Save"
                   >
-                    <i class="bi bi-floppy">Save</i>
+                    <i class="bi bi-floppy"> Save</i>
                   </button>
                   <button
                     type="submit"
                     name="store_option"
                     value="metadata"
                     class="btn btn-primary btn-custom btn-submit"
-                    id="Metada"
+                    id="Metadata"
                   >
                     <i class="bi bi-image"> Metadata</i>
                   </button>
-                  <button type="button" class="btn btn-nav">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-custom btn-submit"
+                  >
                     <a href="{% url 'prev_image' image %}"
                       ><i class="bi bi-arrow-left-square-fill"> Previous</i></a
                     >
                   </button>
-                  <button type="button" class="btn btn-nav">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-custom btn-submit"
+                  >
                     <a href="{% url 'next_image' image %}"
                       ><i class="bi bi-arrow-right-square-fill"> Next</i></a
                     >
