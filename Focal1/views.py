@@ -181,7 +181,7 @@ def index(request):
         'directory': directory,
         'ai_tags': ai_tags,
         'external_tags': external_tags_list,
-        'existing_tags': existing_tags
+        'existing_tags': existing_tags if existing_tags else ""
     })
 
 def uploaded_file(request, filename):
@@ -210,13 +210,13 @@ def tag_image(request):
 
 def prev_image(request, image):
     global current_image_index
-    current_image_index = (current_image_index - 1) % len(images)
+    current_image_index = (current_image_index - 1) % len(images) if images else 0
     # previous_image = images[current_image_index]
     return HttpResponseRedirect(reverse('index'))
 
 def next_image(request, image):
     global current_image_index
-    current_image_index = (current_image_index + 1) % len(images)
+    current_image_index = (current_image_index + 1) % len(images) if images else 0
     # next_image = images[current_image_index]
     return HttpResponseRedirect(reverse('index'))
 
