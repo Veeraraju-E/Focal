@@ -12,16 +12,12 @@ git clone https://github.com/Veeraraju-E/Focal.git
 
 ```
 python -m venv venv
-
 ```
 
 ```
-
 cd venv/Scripts/activate
-
 ```
 
 ```
-
 pip install -r requirements txt
 ```

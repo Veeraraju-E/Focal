@@ -379,22 +379,18 @@
                   >
                     <i class="bi bi-image"> Metadata</i>
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-custom btn-submit"
-                  >
-                    <a href="{% url 'prev_image' image %}"
-                      ><i class="bi bi-arrow-left-square-fill"> Prev</i></a
-                    >
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-custom btn-submit"
-                  >
-                    <a href="{% url 'next_image' image %}"
-                      ><i class="bi bi-arrow-right-square-fill"> Next</i></a
-                    >
-                  </button>
+                  <a href="{% url 'prev_image' image %}"
+                    ><i
+                      class="bi bi-arrow-left-square-fill"
+                      style="font-size: 30px; color: #5e89ff"
+                    ></i
+                  ></a>
+                  <a href="{% url 'next_image' image %}"
+                    ><i
+                      class="bi bi-arrow-right-square-fill"
+                      style="font-size: 30px; color: #5e89ff"
+                    ></i
+                  ></a>
                 </div>
               </form>
             </div>
