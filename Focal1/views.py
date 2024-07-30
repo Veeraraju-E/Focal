@@ -228,18 +228,18 @@ def next_image(request, image):
 def explore(request):
     assigned_tags = []
     unassigned_tags = []
+    print('in explore')
     if request.method == 'POST':
-        if 'file' not in request.FILES:
-            return render(request, 'explore.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
-        file = request.FILES['file']
+        print(request.POST)
+        # print(f'request.FILES : {request.FILES}')
+        # if 'file' not in request.FILES:
+        #     return render(request, 'explore.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
+        file = request.POST['directory']
+        print(f'file : {file}')
         if file:
-            fs = FileSystemStorage()
-            filename = fs.save(file.name, file)
-            uploaded_file_url = fs.url(filename)
-            file_path = os.path.join(settings.MEDIA_ROOT, filename)
-            assigned_tags, unassigned_tags = get_tags_for_image(file_path)
+            assigned_tags, unassigned_tags = get_tags_for_image(file)
             return render(request, 'explore.html', {
-                'filename': filename,
+                'filename': file,
                 'assigned_tags': assigned_tags,
                 'unassigned_tags': unassigned_tags,
             })

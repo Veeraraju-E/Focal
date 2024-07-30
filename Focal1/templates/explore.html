@@ -206,17 +206,15 @@
         </div>
         <button type="submit" class="btn btn-custom btn-block">Upload</button>
       </form>
-      {% if images %}
+      {% if filename %}
       <div class="image-list">
-        {% for image in images %}
         <div class="mb-4">
           <img
-            src="{% url 'uploaded_file' filename=image %}"
+            src="{% url 'uploaded_file' filename=filename %}"
             alt="Image"
             class="img-fluid"
           />
         </div>
-        {% endfor %}
       </div>
       {% else %}
       <p>No images found.</p>
