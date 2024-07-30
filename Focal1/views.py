@@ -238,8 +238,11 @@ def explore(request):
         print(f'file : {file}')
         if file:
             assigned_tags, unassigned_tags = get_tags_for_image(file)
-            return render(request, 'explore.html', {
-                'filename': file,
+            ai_tags = generate_tags_for_image(file)
+            return render(request, 'index.html', {
+                'image': file,
+                'ai_tags' : ai_tags,
+                'directory' : os.path.dirname(file),
                 'assigned_tags': assigned_tags,
                 'unassigned_tags': unassigned_tags,
             })
