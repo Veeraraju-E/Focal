@@ -208,7 +208,7 @@ def tag_image(request):
             save_metadata(absolute_image_path, tags)
 
         print(f"tags : {tags}")
-        
+
         save_tags_to_text_file(absolute_image_path, tags)
         save_tags_to_excel(absolute_image_path, tags)
         save_tags_to_json(absolute_image_path, tags)
@@ -241,7 +241,7 @@ def explore(request):
         if file:
             assigned_tags, unassigned_tags = get_tags_for_image(file)
             ai_tags = generate_tags_for_image(file)
-            return render(request, 'index.html', {
+            return render(request, 'explore.html', {
                 'image': file,
                 'ai_tags' : ai_tags,
                 'directory' : os.path.dirname(file),
