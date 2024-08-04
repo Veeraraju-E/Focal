@@ -206,7 +206,9 @@ def tag_image(request):
 
         if store_option == 'metadata':
             save_metadata(absolute_image_path, tags)
+
         print(f"tags : {tags}")
+        
         save_tags_to_text_file(absolute_image_path, tags)
         save_tags_to_excel(absolute_image_path, tags)
         save_tags_to_json(absolute_image_path, tags)
