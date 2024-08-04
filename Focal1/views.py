@@ -85,20 +85,22 @@ def load_images(dir_path):
 
 def extract_features(image_path):
     image = Image.open(image_path).convert('RGB')
-    preprocess = transforms.Compose([
+    transformations = transforms.Compose([
         transforms.Resize(224),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
-    image_tensor = preprocess(image).unsqueeze(0)
+    image_tensor = transformations(image).unsqueeze(0)
     with torch.no_grad():
         features = model(image_tensor)
+    # print(features)
     return features.squeeze().numpy()
 
 def generate_tags_for_image(image_path):
     feature_vector = extract_features(image_path)
     predicted_indices = torch.topk(torch.tensor(feature_vector), 5).indices.tolist()
+    print(predicted_indices)
     predicted_labels = [labels[idx] for idx in predicted_indices]
     return predicted_labels
 
