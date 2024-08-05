@@ -117,14 +117,13 @@
       button {
         border-radius: 25px;
       }
-      @media (max-width: 576px) {
-        .mt-sm-0,
-        .my-sm-0 {
-          margin-top: 20px !important;
+      @media (max-width: 768px) {
+        .main-content {
+          margin-left: 0;
         }
-        .form-container {
-          width: 100%;
-        }
+      }
+      .my-sm-0 {
+        margin-top: 20px !important;
       }
       .tag-option {
         display: block;
@@ -324,19 +323,23 @@
       </div>
       <form action="/explore" method="post" class="mb-4">
         {% csrf_token %}
-        <div class="form-group">
+        <div class="form-group position-relative flex-grow-1">
           <label for="directory">Path of Image:</label>
           <input
             type="text"
-            class="form-control"
+            class="form-control mr-sm-2"
             id="directory"
             name="directory"
             placeholder="e.g. C:\Users\Downloads\a.jpg"
             required
           />
-        </div>
-        <div class="d-flex justify-content-center">
-          <button type="submit" class="btn btn-custom">Upload</button>
+          <button
+            type="submit"
+            class="btn btn-outline-success my-2 my-sm-0"
+            id="uploadButton"
+          >
+            <i class="bi bi-upload"> Search</i>
+          </button>
         </div>
       </form>
       {% if image %}
@@ -350,6 +353,28 @@
             height="auto"
             margin="auto"
           />
+        </div>
+
+        <div class="form-group">
+          <label for="tags">Tags:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="tags"
+            name="tags"
+            value="{{ existing_tags}}"
+            required
+          />
+        </div>
+        <div class="btn-group-container">
+          <button
+            type="submit"
+            name="edit_tags"
+            class="btn btn-primary btn-custom btn-submit"
+            id="edit"
+          >
+            <i class="bi bi-pencil-square"> Edit</i>
+          </button>
         </div>
       </div>
       {% else %}
