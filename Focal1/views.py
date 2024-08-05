@@ -193,7 +193,6 @@ def index(request):
 
 def uploaded_file(request, filename):
     global directory
-    # print(os.path.join(directory, filename))
     return FileResponse(open(os.path.join(directory, filename), 'rb'))
 
 @csrf_protect
@@ -220,13 +219,11 @@ def tag_image(request):
 def prev_image(request, image):
     global current_image_index
     current_image_index = (current_image_index - 1) % len(images) if images else 0
-    # previous_image = images[current_image_index]
     return HttpResponseRedirect(reverse('index'))
 
 def next_image(request, image):
     global current_image_index
     current_image_index = (current_image_index + 1) % len(images) if images else 0
-    # next_image = images[current_image_index]
     return HttpResponseRedirect(reverse('index'))
 
 def explore(request):
