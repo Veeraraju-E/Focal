@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from django.http import FileResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
@@ -58,15 +57,6 @@ labels = json.load(urllib.request.urlopen(LABELS_URL))
 model = resnet50(pretrained=True)
 model.eval()
 
-# Load external tags
-# def load_external_tags():
-#     if os.path.exists(EXTERNAL_TAGS_FILE):
-#         with open(EXTERNAL_TAGS_FILE, 'r') as f:
-#             tags = f.read().splitlines()
-#         return tags
-#     return []
-
-# external_tags = load_external_tags()
 
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'}
@@ -81,7 +71,7 @@ def load_images(dir_path):
             if allowed_file(file):
                 relative_path = os.path.relpath(os.path.join(root, file), start=dir_path)
                 images.append(relative_path.replace('\\', '/'))
-    print(f"Loaded images: {images}")
+    # print(f"Loaded images: {images}")
 
 def extract_features(image_path):
     image = Image.open(image_path).convert('RGB')
@@ -94,13 +84,12 @@ def extract_features(image_path):
     image_tensor = transformations(image).unsqueeze(0)
     with torch.no_grad():
         features = model(image_tensor)
-    # print(features)
     return features.squeeze().numpy()
 
 def generate_tags_for_image(image_path):
     feature_vector = extract_features(image_path)
     predicted_indices = torch.topk(torch.tensor(feature_vector), 5).indices.tolist()
-    print(predicted_indices)
+    # print(predicted_indices)
     predicted_labels = [labels[idx] for idx in predicted_indices]
     return predicted_labels
 

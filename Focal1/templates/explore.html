@@ -52,11 +52,7 @@
       img[src="static/images/logo.png"] {
         margin: auto;
       }
-      img[src="{% url 'uploaded_file' filename=image %}"] {
-        width: 100%;
-        height: auto;
-        margin: auto;
-      }
+
       img[src="static/images/left.png"] {
         width: 30px;
         height: 30px;
@@ -70,6 +66,11 @@
         margin: 20px;
         background-color: #5e89ff;
         border-radius: 10px;
+      }
+      .img-fluid {
+        width: 100%;
+        height: auto;
+        margin: auto;
       }
       .form-container {
         width: 100%;
@@ -93,6 +94,7 @@
         margin: 0;
         border-radius: 25px;
         transition: background-color 0.3s, transform 0.3s;
+        width: 50%;
       }
       .btn-custom:hover {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -265,6 +267,7 @@
         top: 50%;
         transform: translateY(-50%);
         padding: 0.5rem 1rem;
+        text-align: center;
       }
     </style>
   </head>
@@ -332,7 +335,9 @@
             required
           />
         </div>
-        <button type="submit" class="btn btn-custom btn-block">Upload</button>
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-custom">Upload</button>
+        </div>
       </form>
       {% if image %}
       <div class="image-list">
@@ -341,6 +346,9 @@
             src="{% url 'uploaded_file' filename=image %}"
             alt="Image"
             class="img-fluid"
+            width="100%"
+            height="auto"
+            margin="auto"
           />
         </div>
       </div>
