@@ -221,9 +221,6 @@ def explore(request):
     print('in explore')
     if request.method == 'POST':
         print(request.POST)
-        # print(f'request.FILES : {request.FILES}')
-        # if 'file' not in request.FILES:
-        #     return render(request, 'explore.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
         file = request.POST['directory']
         print(f'file : {file}')
         if file:
@@ -234,7 +231,7 @@ def explore(request):
                 'ai_tags' : ai_tags,
                 'directory' : os.path.dirname(file),
                 'assigned_tags': assigned_tags,
-                'unassigned_tags': unassigned_tags,
+                'existing_tags': unassigned_tags,
             })
     return render(request, 'explore.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
 
