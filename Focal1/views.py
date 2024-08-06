@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.http import FileResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from PIL import Image, UnidentifiedImageError
 import piexif
@@ -150,6 +151,8 @@ def home(request):
             load_images(directory)
             current_image_index = 0
             return redirect("index")
+        else:
+            messages.error(request, "Please enter directory path, not file")
     return render(request, "home.html", {})
 
 def index(request):
@@ -161,7 +164,7 @@ def index(request):
     external_tags_list = list(external_tags.keys())
     if len(external_tags_list) > 9:
         external_tags_list = external_tags_list[:10]
-    print(f"external tags dict : {external_tags}")
+    # print(f"external tags dict : {external_tags}")
     existing_tags = []
     try:
         # Retrieve existing tags for image
@@ -231,7 +234,7 @@ def explore(request):
                 'ai_tags' : ai_tags,
                 'directory' : os.path.dirname(file),
                 'assigned_tags': assigned_tags,
-                'existing_tags': unassigned_tags,
+                'existing_tags': assigned_tags,
             })
     return render(request, 'explore.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
 
@@ -239,6 +242,9 @@ def get_tags_for_image(image_path):
     feature_vector = extract_features(image_path)
     feature_key = hashlib.md5(feature_vector.tobytes()).hexdigest()  # Shortened hash key
     assigned_tags = image_tags.get(feature_key, [])
-    predicted_tags = generate_tags_for_image(image_path)
+    # predicted_tags = generate_tags_for_image(image_path)
     unassigned_tags = [tag for tag in list(external_tags.keys()) if tag not in assigned_tags]
-    return assigned_tags, unassigned_tags
+    for i in range(len(df)):
+        if image_path == df.iloc[i][0]:
+            assigned_tags = df.iloc[i][1]
+    return assigned_tags if len(assigned_tags) > 0 else "", unassigned_tags

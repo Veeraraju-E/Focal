@@ -319,7 +319,7 @@
     <div class="form-container">
       <div class="instructions">
         <p><strong>Instructions:</strong></p>
-        <p>Enter the complete file path.</p>
+        <p>Enter the complete file path of the Image.</p>
       </div>
       <form action="/explore" method="post" class="mb-4">
         {% csrf_token %}
@@ -362,19 +362,14 @@
             class="form-control"
             id="tags"
             name="tags"
-            value="{{ existing_tags}}"
+            value="{{ existing_tags }}"
             required
           />
         </div>
         <div class="btn-group-container">
-          <button
-            type="submit"
-            name="edit_tags"
-            class="btn btn-primary btn-custom btn-submit"
-            id="edit"
+          <a href="/index" class="btn btn-custom btn-block">
+            <i class="bi bi-pencil-square"></i>Edit</a
           >
-            <i class="bi bi-pencil-square"> Edit</i>
-          </button>
         </div>
       </div>
       {% else %}
