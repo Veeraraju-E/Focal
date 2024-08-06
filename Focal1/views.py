@@ -235,18 +235,6 @@ def explore(request):
             })
     return render(request, 'explore.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
 
-# def update_tags(request):
-#     if request.method == 'POST':
-#         tags = request.POST.get('tags')
-#         filename = request.POST.get('filename')
-#         file_path = os.path.join(settings.MEDIA_ROOT, filename)
-#         save_tags_to_json(file_path, tags)
-#         save_tags_to_excel(file_path, tags)  # Save updated tags to Excel
-#         return redirect('explore')
-#     return redirect('explore')
-
-# Helper function
-
 def get_tags_for_image(image_path):
     feature_vector = extract_features(image_path)
     feature_key = hashlib.md5(feature_vector.tobytes()).hexdigest()  # Shortened hash key
