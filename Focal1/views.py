@@ -227,16 +227,22 @@ def explore(request):
         file = request.POST['directory']
         print(f'file : {file}')
         if file:
-            assigned_tags, unassigned_tags = get_tags_for_image(file)
+            assigned_tags_str, unassigned_tags = get_tags_for_image(file)
             ai_tags = generate_tags_for_image(file)
             return render(request, 'explore.html', {
                 'image': file,
                 'ai_tags' : ai_tags,
                 'directory' : os.path.dirname(file),
-                'assigned_tags': assigned_tags,
-                'existing_tags': assigned_tags,
+                'assigned_tags': assigned_tags_str,
+                'existing_tags': assigned_tags_str
             })
-    return render(request, 'explore.html', {'assigned_tags': assigned_tags, 'unassigned_tags': unassigned_tags})
+        else:
+            messages.error(request, "File not found")
+            return render(request, 'explore.html',{
+                'assigned_tags': assigned_tags_str,
+                'existing_tags': assigned_tags_str,
+            })
+    return render(request, 'explore.html', {'assigned_tags': assigned_tags_str, 'unassigned_tags': unassigned_tags})
 
 def get_tags_for_image(image_path):
     feature_vector = extract_features(image_path)
@@ -247,4 +253,11 @@ def get_tags_for_image(image_path):
     for i in range(len(df)):
         if image_path == df.iloc[i][0]:
             assigned_tags = df.iloc[i][1]
-    return assigned_tags if len(assigned_tags) > 0 else "", unassigned_tags
+    print(f'in get_tags_for_image, assigned_tags : {assigned_tags}')
+    assigned_tags_str = ""
+    if len(assigned_tags) > 0:
+        for i in range(len(assigned_tags) - 1):
+            assigned_tags_str += assigned_tags[i] + ','
+        assigned_tags_str += assigned_tags[-1]
+
+    return assigned_tags_str, unassigned_tags
