@@ -245,19 +245,24 @@ def explore(request):
     return render(request, 'explore.html', {'assigned_tags': assigned_tags_str, 'unassigned_tags': unassigned_tags})
 
 def get_tags_for_image(image_path):
-    feature_vector = extract_features(image_path)
-    feature_key = hashlib.md5(feature_vector.tobytes()).hexdigest()  # Shortened hash key
-    assigned_tags = image_tags.get(feature_key, [])
-    # predicted_tags = generate_tags_for_image(image_path)
+    """
+    retrieve tags for particular image
+    """
+    assigned_tags, assigned_tags_str = [], ""
     unassigned_tags = [tag for tag in list(external_tags.keys()) if tag not in assigned_tags]
+    
     for i in range(len(df)):
         if image_path == df.iloc[i][0]:
+            print('found')
             assigned_tags = df.iloc[i][1]
-    print(f'in get_tags_for_image, assigned_tags : {assigned_tags}')
-    assigned_tags_str = ""
+            break
+        
     if len(assigned_tags) > 0:
-        for i in range(len(assigned_tags) - 1):
-            assigned_tags_str += assigned_tags[i] + ','
-        assigned_tags_str += assigned_tags[-1]
+        if type(assigned_tags) == 'list':
+            for i in range(len(assigned_tags) - 1):
+                assigned_tags_str += assigned_tags[i] + ','
+            assigned_tags_str += assigned_tags[-1]
+        else:
+            assigned_tags_str = assigned_tags
 
     return assigned_tags_str, unassigned_tags
