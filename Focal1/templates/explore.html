@@ -321,6 +321,14 @@
         <p><strong>Instructions:</strong></p>
         <p>Enter the complete file path of the Image.</p>
       </div>
+      {% for message in messages %}
+
+      <div class="alert alert-success">
+        <a class="close" href="/explore" data-dismiss="alert">×</a>
+        {{ message }}
+      </div>
+
+      {% endfor %}
       <form action="/explore" method="post" class="mb-4">
         {% csrf_token %}
         <div class="form-group position-relative flex-grow-1">
@@ -372,8 +380,6 @@
           >
         </div>
       </div>
-      {% else %}
-      <p>No images found.</p>
       {% endif %}
     </div>
     <!-- Bootstrap JS and dependencies -->

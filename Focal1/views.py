@@ -222,11 +222,22 @@ def explore(request):
     assigned_tags = []
     unassigned_tags = []
     print('in explore')
+    assigned_tags_str = ''
     if request.method == 'POST':
         print(request.POST)
         file = request.POST['directory']
         print(f'file : {file}')
-        if file:
+        if os.path.isdir(file):
+            # print('in explore if')
+            file = None
+            messages.error(request, "Please enter file path not folder")
+            return render(request, 'explore.html',{
+                'image': file,
+                'assigned_tags': assigned_tags_str,
+                'existing_tags': assigned_tags_str,
+            })
+        elif os.path.exists(file):
+            # print('in explore elif')
             assigned_tags_str, unassigned_tags = get_tags_for_image(file)
             ai_tags = generate_tags_for_image(file)
             return render(request, 'explore.html', {
@@ -237,8 +248,11 @@ def explore(request):
                 'existing_tags': assigned_tags_str
             })
         else:
-            messages.error(request, "File not found")
+            # print('in explore else')
+            file = None
+            messages.error(request, "File not found. Please check the complete path of your image.")
             return render(request, 'explore.html',{
+                'image': file,
                 'assigned_tags': assigned_tags_str,
                 'existing_tags': assigned_tags_str,
             })
