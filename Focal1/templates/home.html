@@ -233,6 +233,14 @@
         <p><strong>Instructions:</strong></p>
         <p>Enter the entire path of root folder with the images.</p>
       </div>
+      {% for message in messages %}
+
+      <div class="alert alert-success">
+        <a class="close" href="/" data-dismiss="alert">×</a>
+        {{ message }}
+      </div>
+
+      {% endfor %}
       <form
         action="{% url 'home' %}"
         method="post"
