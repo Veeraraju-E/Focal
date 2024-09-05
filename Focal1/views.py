@@ -68,11 +68,14 @@ def load_images(dir_path):
     images = []
     print(f"Loading images from directory: {dir_path}")
     for root, _, files in os.walk(dir_path):
-        for file in files:
+        for i, file in enumerate(files):
             if allowed_file(file):
                 relative_path = os.path.relpath(os.path.join(root, file), start=dir_path)
-                images.append(relative_path.replace('\\', '/'))
-    # print(f"Loaded images: {images}")
+                # print(i, relative_path.replace('\\', '/'))
+                images.append(relative_path)
+    for i, image in enumerate(images):
+        print(i, image)
+    return images
 
 def extract_features(image_path):
     image = Image.open(image_path).convert('RGB')
@@ -148,40 +151,49 @@ def home(request):
     if request.method == 'POST':
         directory = request.POST.get('directory')
         if os.path.isdir(directory):
-            load_images(directory)
-            current_image_index = 0
-            return redirect("index")
+            images = load_images(directory)
+            if images:
+                current_image_index = 0
+                return redirect("index")
+            else:
+                messages.error("No images found in this directory.")
+                return redirect("home")
         else:
-            messages.error(request, "Please enter directory path, not file")
+            messages.error(request, "Such a directory doesn't exist. Please check your path.")
+            return redirect("home")
     return render(request, "home.html", {})
 
 def index(request):
     global directory, current_image_index, images, external_tags
-    ai_tags = generate_tags_for_image(os.path.join(directory, images[current_image_index])) if images else []
-    print("in index")
+    if not images:
+        messages.error(request, "No images found. Please load a directory first.")
+        return redirect('home')
+    image_path = os.path.join(directory, images[current_image_index])
+    print(f"in index, image_path : {image_path}")
+    ai_tags = generate_tags_for_image(image_path)
     print(current_image_index)
     external_tags = dict(sorted(external_tags.items(), key=lambda item : item[1], reverse=True))
     external_tags_list = list(external_tags.keys())
     if len(external_tags_list) > 9:
         external_tags_list = external_tags_list[:10]
     # print(f"external tags dict : {external_tags}")
-    existing_tags = []
-    try:
-        # Retrieve existing tags for image
-        df = load_tags_from_excel()
-        for i, row in enumerate(df.iloc[:, 0]):
-            if os.path.join(directory, images[current_image_index]) == row:
-                existing_tags = df.iloc[i][1]
-    except:
-        pass
-    # print(os.path.join(directory, images[current_image_index]))
+    existing_tags = get_existing_tags(image_path)
     return render(request, 'index.html', {
-        'image': images[current_image_index] if images else None,
+        'image': image_path,
         'directory': directory,
         'ai_tags': ai_tags,
         'external_tags': external_tags_list,
         'existing_tags': existing_tags if existing_tags else ""
     })
+def get_existing_tags(image_path):
+    try:
+        df = load_tags_from_excel()
+        for i, row in enumerate(df.iloc[:, 0]):
+            if image_path == row:
+                return df.iloc[i, 1]  # Return tags for the image
+    except Exception as e:
+        print(f"Error retrieving tags for {image_path}: {e}")
+    return []
 
 def uploaded_file(request, filename):
     global directory
@@ -195,6 +207,7 @@ def tag_image(request):
         image_path = request.POST.get('image_path')
         store_option = request.POST.get('store_option')
         absolute_image_path = os.path.join(directory, image_path)
+        print(f"absolute_image_path : {absolute_image_path}")
         print(f"Received tags: {tags}, store option: {store_option}, for image: {absolute_image_path}")
 
         if store_option == 'metadata':
@@ -211,11 +224,15 @@ def tag_image(request):
 def prev_image(request, image):
     global current_image_index
     current_image_index = (current_image_index - 1) % len(images) if images else 0
+    if current_image_index < 0:
+        current_image_index = len(images) - 1
     return HttpResponseRedirect(reverse('index'))
 
 def next_image(request, image):
     global current_image_index
     current_image_index = (current_image_index + 1) % len(images) if images else 0
+    if current_image_index > len(images) - 1:
+        current_image_index = 0
     return HttpResponseRedirect(reverse('index'))
 
 def explore(request):

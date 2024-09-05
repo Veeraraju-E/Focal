@@ -33,18 +33,13 @@ body {
   overflow-y: auto;
   margin: 10% auto;
 }
-img {
+.navbar img {
   width: 150px;
   height: 75px;
-  margin: 20px auto;
-  border-radius: 15px;
-}
-img[src="static/images/logo.png"] {
   margin: auto;
 }
-img[src="{% url 'uploaded_file' filename=image %}"] {
+img {
   width: 100%;
-  height: auto;
   margin: auto;
 }
 img[src="static/images/left.png"] {
@@ -158,7 +153,7 @@ button {
   }
 }
 .bg-light {
-  background-color: #ddd !important;
+  background-color: #aaa;
 }
 .navbar {
   margin: auto;
