@@ -18,15 +18,10 @@ import urllib.request
 # Global variables
 TAGS_FILE = os.path.join(settings.BASE_DIR, 'tags.xlsx')
 JSON_FILE = os.path.join(settings.BASE_DIR, 'image_tags.json')
-# UPLOAD_FOLDER = os.path.join(settings.BASE_DIR, 'uploads')
 images = []
 current_image_index = 0
 directory = ''
 external_tags = {}
-
-# Ensure upload folder exists
-# if not os.path.exists(UPLOAD_FOLDER):
-#     os.makedirs(UPLOAD_FOLDER)
 
 # Load or create the Excel file
 def load_tags_from_excel():
@@ -119,9 +114,34 @@ def save_info_to_text_file(image_path, tags, species, reference):
 
     new_tags = [tag.strip() for tag in tags.split(',')]
 
-    for tag in new_tags:
-        external_tags[tag] = external_tags.get(tag, 0) + 1
+    # Extract the image file name (without extension) from the path
+    image_name = os.path.splitext(os.path.basename(image_path))[0]
+    print(f"in save_info, image_name : {image_name}")
 
+    # Create the tag file name: image_file_name + '-Tag.txt'
+    tag_file_name = f"{image_name}-Tag.txt"
+    
+    # Get the directory where the image is located
+    image_dir = os.path.dirname(image_path)
+    
+    # Full path to the tag file (in the same folder as the image)
+    tag_file_path = os.path.join(image_dir, tag_file_name)
+    print(f"tag_file_path : {tag_file_path}")
+    
+    # Prepare the data to be saved in JSON format
+    tag_info = {
+        "Image file name": os.path.basename(image_path),
+        "Image file path": image_path,
+        "Species name": species,
+        "Text tags": new_tags,
+        "Reference info": reference
+    }
+    
+    # Write the data to the tag file in JSON format
+    with open(tag_file_path, 'w') as f:
+        json.dump(tag_info, f, indent=4)
+
+    print(f"Tag information saved to {tag_file_path}")
 
 def save_tags_to_json(image_path, tags):
     global image_tags

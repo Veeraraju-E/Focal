@@ -113,7 +113,15 @@
 
                 <div class="form-group">
                   <label for="tags">Path:</label>
-                  <p>{{ image }}</p>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="path"
+                    name="path"
+                    value="{{ image }}"
+                    readonly
+                  />
+
                   <label for="tags">Tag the image:</label>
                   <input
                     type="text"
@@ -123,6 +131,7 @@
                     value="{{ existing_tags }}"
                     required
                   />
+
                   <label for="tags">Enter the species name:</label>
                   <input
                     type="text"

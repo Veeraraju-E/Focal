@@ -75,7 +75,7 @@ img[src="static/images/right.png"] {
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   color: #fff;
   border: none;
-  margin: 10% 0;
+  margin: 3% 0;
   border-radius: 25px;
   transition: background-color 0.3s, transform 0.3s;
 }
@@ -100,7 +100,8 @@ label {
 }
 input,
 select,
-button {
+button,
+output {
   border-radius: 25px;
 }
 @media (min-width: 576px) {
@@ -171,6 +172,9 @@ p,
 :placeholder-shown {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+output {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 h4 {
   margin: 10px 0;
