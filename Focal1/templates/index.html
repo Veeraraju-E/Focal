@@ -110,7 +110,10 @@
                 {% csrf_token %}
                 <input type="hidden" name="image_path" value="{{ image }}" />
                 <div id="tag-container"></div>
+
                 <div class="form-group">
+                  <label for="tags">Path:</label>
+                  <p>{{ image }}</p>
                   <label for="tags">Tag the image:</label>
                   <input
                     type="text"

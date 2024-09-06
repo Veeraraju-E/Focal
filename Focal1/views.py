@@ -154,7 +154,7 @@ def get_existing_info(image_path):
                 return df.iloc[i, 1:4]  # info tags for the image
     except Exception as e:
         print(f"Error retrieving tags for {image_path}: {e}")
-    return []
+    return ["", "", ""]
 
 # +---------------------------- The views ----------------------------+ 
 def home(request):
@@ -190,8 +190,7 @@ def index(request):
         external_tags_list = external_tags_list[:10]
     # print(f"external tags dict : {external_tags}")
     existing_tags, existing_species, existing_reference = get_existing_info(image_path)
-    # print(f"existing info : {existing_tags}, {existing_species}, {existing_reference}")
-    # existing_tags, existing_species, existing_reference = get_existing_info(image_path)
+    print(f"existing info : {existing_tags}, {existing_species}, {existing_reference}")
     return render(request, 'index.html', {
         'image': image_path,
         'directory': directory,
@@ -263,7 +262,6 @@ def explore(request):
                 'existing_tags': assigned_tags_str,
             })
         elif os.path.exists(file):
-            # print('in explore elif')
             assigned_tags_str, unassigned_tags = get_tags_for_image(file)
             ai_tags = generate_tags_for_image(file)
             return render(request, 'explore.html', {
