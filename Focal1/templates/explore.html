@@ -115,7 +115,13 @@
             value="{{ existing_tags }}"
             required
           />
-          <a href="/index" class="btn btn-custom btn-edit"> Edit </a>
+          <button
+            type="submit"
+            class="btn btn-outline-success my-2 my-sm-0"
+            id="editButton"
+          >
+            <i class="bi bi-upload"> <a href="/index">Edit </a></i>
+          </button>
         </div>
       </div>
       {% endif %}

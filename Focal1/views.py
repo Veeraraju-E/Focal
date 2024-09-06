@@ -114,21 +114,14 @@ def save_info_to_text_file(image_path, tags, species, reference):
 
     new_tags = [tag.strip() for tag in tags.split(',')]
 
-    # Extract the image file name (without extension) from the path
     image_name = os.path.splitext(os.path.basename(image_path))[0]
     print(f"in save_info, image_name : {image_name}")
 
-    # Create the tag file name: image_file_name + '-Tag.txt'
-    tag_file_name = f"{image_name}-Tag.txt"
-    
-    # Get the directory where the image is located
+    tag_file_name = f"{image_name}-Tag.txt"    
     image_dir = os.path.dirname(image_path)
-    
-    # Full path to the tag file (in the same folder as the image)
     tag_file_path = os.path.join(image_dir, tag_file_name)
     print(f"tag_file_path : {tag_file_path}")
-    
-    # Prepare the data to be saved in JSON format
+
     tag_info = {
         "Image file name": os.path.basename(image_path),
         "Image file path": image_path,
@@ -200,15 +193,21 @@ def index(request):
     if not images:
         messages.error(request, "No images found. Please load a directory first.")
         return redirect('home')
+    # if request.method == "GET":
+    #     print(request.GET)
+    #     # case when redirected from explore
+    #     directory_from_request = request.GET.get(directory)
+    #     print(f"directory_from_request : {directory_from_request}")
+    #     directory = directory_from_request
     image_path = os.path.join(directory, images[current_image_index])
     # print(f"in index, image_path : {image_path}")
     ai_tags = generate_tags_for_image(image_path)
-    # print(current_image_index)
+    print(current_image_index)
     external_tags = dict(sorted(external_tags.items(), key=lambda item : item[1], reverse=True))
     external_tags_list = list(external_tags.keys())
     if len(external_tags_list) > 9:
         external_tags_list = external_tags_list[:10]
-    # print(f"external tags dict : {external_tags}")
+
     existing_tags, existing_species, existing_reference = get_existing_info(image_path)
     print(f"existing info : {existing_tags}, {existing_species}, {existing_reference}")
     return render(request, 'index.html', {
@@ -264,7 +263,7 @@ def next_image(request, image):
     return HttpResponseRedirect(reverse('index'))
 
 def explore(request):
-    assigned_tags = []
+    global images, external_tags
     unassigned_tags = []
     print('in explore')
     assigned_tags_str = ''
@@ -283,13 +282,20 @@ def explore(request):
             })
         elif os.path.exists(file):
             assigned_tags_str, unassigned_tags = get_tags_for_image(file)
+            external_tags = dict(sorted(external_tags.items(), key=lambda item : item[1], reverse=True))
+            external_tags_list = list(external_tags.keys())
+            if len(external_tags_list) > 9:
+                external_tags_list = external_tags_list[:10]
             ai_tags = generate_tags_for_image(file)
-            return render(request, 'explore.html', {
-                'image': file,
-                'ai_tags' : ai_tags,
+            existing_tags, existing_species, existing_reference = get_existing_info(file)
+            return render(request, 'index.html', {
+                'image' : file,
+                'ai_tags': ai_tags,
+                'external_tags' : external_tags,
+                'existing_tags': existing_tags,
+                'existing_species' : existing_species,
+                'existing_reference': existing_reference,
                 'directory' : os.path.dirname(file),
-                'assigned_tags': assigned_tags_str,
-                'existing_tags': assigned_tags_str
             })
         else:
             # print('in explore else')

@@ -255,12 +255,9 @@ span {
 .form-group.position-relative {
   position: relative;
 }
-
+/* 
 .form-group .btn-custom {
-  position: absolute;
-  right: 5px;
-  top: 50%;
   transform: translateY(-50%);
-  padding: 0.5rem 1rem;
-  text-align: center;
-}
+  padding: 0.5rem 1rem !important;
+  text-align: center !important;
+} */
