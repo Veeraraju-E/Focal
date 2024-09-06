@@ -234,3 +234,41 @@ span {
   -moz-backface-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.tab-list {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+}
+
+.tab-item {
+  flex: 1;
+  padding: 15px 0px;
+  cursor: pointer;
+  border-right: solid #ddd;
+  text-align: center;
+  margin-right: -1px;
+  background-color: #f4f4f4;
+  transition: background-color 0.05s ease;
+}
+.tab-item:last-child {
+  margin-right: 0;
+  border-right: 0;
+}
+.tab-item:hover {
+  background-color: #ddd;
+}
+
+.tab-item.active {
+  font-weight: bold;
+  background-color: #ddd;
+  color: white;
+}
+.tab-content {
+  display: none;
+  margin-top: 20px;
+}
+.tab-content.active {
+  display: block;
+}

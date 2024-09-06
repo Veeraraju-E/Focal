@@ -96,6 +96,14 @@
       >
         {% csrf_token %}
         <div class="form-group position-relative flex-grow-1">
+          <!-- <label for="folderSelector">Choose a folder:</label>
+          <input
+            type="file"
+            class="form-control-file"
+            id="folderSelector"
+            name="directory"
+            directory
+          /> -->
           <label for="directory">Enter the path:</label>
           <input
             type="text"
@@ -114,6 +122,21 @@
           </button>
         </div>
       </form>
+      <script>
+        // Listen for folder selection change
+        document
+          .getElementById("folderSelector")
+          .addEventListener("change", function (event) {
+            const directoryInput = document.getElementById("directory");
+            if (this.files.length > 0) {
+              // Get the path of the first file and derive the folder path
+              const fullPath = this.files[0].webkitRelativePath;
+              const folderPath = fullPath.substring(0, fullPath.indexOf("/"));
+              directoryInput.value = fullPath;
+            }
+            directoryInput.value = fullPath;
+          });
+      </script>
       <script>
         document
           .getElementById("selectFolderButton")

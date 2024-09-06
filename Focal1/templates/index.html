@@ -139,7 +139,6 @@
                     id="species"
                     name="species"
                     value="{{ existing_species }}"
-                    required
                   />
                   <label for="tags">Enter the reference (if any):</label>
                   <input
@@ -148,8 +147,71 @@
                     id="reference"
                     name="reference"
                     value="{{ existing_reference }}"
-                    required
                   />
+                  <!-- <div class="tab-list">
+                    <span class="tab-item" onclick="showSection('file', this)"
+                      >File</span
+                    >
+                    <span
+                      class="tab-item active"
+                      onclick="showSection('tags', this)"
+                      >Tags</span
+                    >
+                    <span
+                      class="tab-item"
+                      onclick="showSection('species', this)"
+                      >Species</span
+                    >
+                    <span
+                      class="tab-item"
+                      onclick="showSection('reference', this)"
+                      >Reference</span
+                    >
+                  </div>
+                  <div id="file" class="tab-content">
+                    <label for="file">Path:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="path"
+                      name="path"
+                      value="{{ image }}"
+                      readonly
+                    />
+                  </div>
+                  <div id="path" class="tab-content active">
+                    <label for="path">Tag the image:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="path"
+                      name="path"
+                      value="{{ existing_tags }}"
+                      required
+                    />
+                  </div>
+                  <div id="species" class="tab-content">
+                    <label for="species">Enter the species name:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="species"
+                      name="species"
+                      value="{{ existing_species }}"
+                      required
+                    />
+                  </div>
+                  <div id="reference" class="tab-content">
+                    <label for="reference">Enter the reference (if any):</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="reference"
+                      name="reference"
+                      value="{{ existing_reference }}"
+                      required
+                    />
+                  </div> -->
                 </div>
 
                 <div class="btn-group-container">
@@ -236,6 +298,35 @@
           navbar.classList.remove("navbar-hidden");
         }
       };
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+      function showSection(sectionId, tabElement) {
+        $(".tab-content").removeClass("active");
+        $("#" + sectionId).addClass("active");
+        $(".tab-item").removeClass("active");
+        $(tabElement).addClass("active");
+      }
+
+      $(document).ready(function () {
+        showSection("journals", $(".tab-item.active")[0]);
+      });
+    </script>
+
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-LDSNDGV8N1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-LDSNDGV8N1");
     </script>
   </body>
 </html>
