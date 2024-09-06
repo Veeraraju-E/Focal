@@ -18,22 +18,22 @@ import urllib.request
 # Global variables
 TAGS_FILE = os.path.join(settings.BASE_DIR, 'tags.xlsx')
 JSON_FILE = os.path.join(settings.BASE_DIR, 'image_tags.json')
-UPLOAD_FOLDER = os.path.join(settings.BASE_DIR, 'uploads')
+# UPLOAD_FOLDER = os.path.join(settings.BASE_DIR, 'uploads')
 images = []
 current_image_index = 0
 directory = ''
 external_tags = {}
 
 # Ensure upload folder exists
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+# if not os.path.exists(UPLOAD_FOLDER):
+#     os.makedirs(UPLOAD_FOLDER)
 
 # Load or create the Excel file
 def load_tags_from_excel():
     if os.path.exists(TAGS_FILE):
         df = pd.read_excel(TAGS_FILE, engine='openpyxl')
     else:
-        df = pd.DataFrame(columns=['Image Path', 'Tags'])
+        df = pd.DataFrame(columns=['Image Path', 'Tags', 'Species', 'Reference'])
         df.to_excel(TAGS_FILE, index=False, engine='openpyxl')
 
     for row in df.iloc[:, 1]:
@@ -97,7 +97,7 @@ def generate_tags_for_image(image_path):
     predicted_labels = [labels[idx] for idx in predicted_indices]
     return predicted_labels
 
-def save_metadata(image_path, tags):
+def save_metadata(image_path, tags, species, referenec):
     print(f"Attempting to save metadata for image: {image_path}")
     try:
         image = Image.open(image_path)
@@ -115,7 +115,7 @@ def save_metadata(image_path, tags):
         print(f"Error processing image {image_path}: {e}")
 
 
-def save_tags_to_text_file(image_path, tags):
+def save_info_to_text_file(image_path, tags, species, reference):
 
     new_tags = [tag.strip() for tag in tags.split(',')]
 
@@ -133,16 +133,28 @@ def save_tags_to_json(image_path, tags):
         json.dump(image_tags, f)
     print(f"Successfully saved tags to JSON for image: {image_path}")
 
-def save_tags_to_excel(image_path, tags):
+def save_info_to_excel(image_path, tags, species, reference):
     global df
     # Check if image_path already exists in DataFrame
     if image_path in df['Image Path'].values:
         df.loc[df['Image Path'] == image_path, 'Tags'] = tags
+        df.loc[df['Image Path'] == image_path, 'Species'] = species
+        df.loc[df['Image Path'] == image_path, 'Reference'] = reference
     else:
         new_row = {'Image Path': image_path, 'Tags': tags}
         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     df.to_excel(TAGS_FILE, index=False)
-    print(f"Successfully saved tags to Excel for image: {image_path}")
+    print(f"Successfully saved info to Excel for image: {image_path}")
+
+def get_existing_info(image_path):
+    try:
+        df = load_tags_from_excel()
+        for i, row in enumerate(df.iloc[:, 0]):
+            if image_path == row:
+                return df.iloc[i, 1:4]  # info tags for the image
+    except Exception as e:
+        print(f"Error retrieving tags for {image_path}: {e}")
+    return []
 
 # +---------------------------- The views ----------------------------+ 
 def home(request):
@@ -169,31 +181,26 @@ def index(request):
         messages.error(request, "No images found. Please load a directory first.")
         return redirect('home')
     image_path = os.path.join(directory, images[current_image_index])
-    print(f"in index, image_path : {image_path}")
+    # print(f"in index, image_path : {image_path}")
     ai_tags = generate_tags_for_image(image_path)
-    print(current_image_index)
+    # print(current_image_index)
     external_tags = dict(sorted(external_tags.items(), key=lambda item : item[1], reverse=True))
     external_tags_list = list(external_tags.keys())
     if len(external_tags_list) > 9:
         external_tags_list = external_tags_list[:10]
     # print(f"external tags dict : {external_tags}")
-    existing_tags = get_existing_tags(image_path)
+    existing_tags, existing_species, existing_reference = get_existing_info(image_path)
+    # print(f"existing info : {existing_tags}, {existing_species}, {existing_reference}")
+    # existing_tags, existing_species, existing_reference = get_existing_info(image_path)
     return render(request, 'index.html', {
         'image': image_path,
         'directory': directory,
         'ai_tags': ai_tags,
         'external_tags': external_tags_list,
-        'existing_tags': existing_tags if existing_tags else ""
+        'existing_tags': existing_tags,
+        'existing_species' : existing_species,
+        'existing_reference': existing_reference
     })
-def get_existing_tags(image_path):
-    try:
-        df = load_tags_from_excel()
-        for i, row in enumerate(df.iloc[:, 0]):
-            if image_path == row:
-                return df.iloc[i, 1]  # Return tags for the image
-    except Exception as e:
-        print(f"Error retrieving tags for {image_path}: {e}")
-    return []
 
 def uploaded_file(request, filename):
     global directory
@@ -206,17 +213,19 @@ def tag_image(request):
         tags = request.POST.get('tags')
         image_path = request.POST.get('image_path')
         store_option = request.POST.get('store_option')
+        species = request.POST.get('species')
+        reference = request.POST.get('reference')
         absolute_image_path = os.path.join(directory, image_path)
-        print(f"absolute_image_path : {absolute_image_path}")
-        print(f"Received tags: {tags}, store option: {store_option}, for image: {absolute_image_path}")
+        # print(f"absolute_image_path : {absolute_image_path}")
+        # print(f"Received tags: {tags}, store option: {store_option}, for image: {absolute_image_path}")
 
         if store_option == 'metadata':
-            save_metadata(absolute_image_path, tags)
+            save_metadata(absolute_image_path, tags, species, reference)
 
-        print(f"tags : {tags}")
+        print(f"tags : {tags}, species : {species}, reference : {reference}")
 
-        save_tags_to_text_file(absolute_image_path, tags)
-        save_tags_to_excel(absolute_image_path, tags)
+        save_info_to_text_file(absolute_image_path, tags, species, reference)
+        save_info_to_excel(absolute_image_path, tags, species, reference)
         save_tags_to_json(absolute_image_path, tags)
 
     return redirect('index')

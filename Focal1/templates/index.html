@@ -120,7 +120,26 @@
                     value="{{ existing_tags }}"
                     required
                   />
+                  <label for="tags">Enter the species name:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="species"
+                    name="species"
+                    value="{{ existing_species }}"
+                    required
+                  />
+                  <label for="tags">Enter the reference (if any):</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="reference"
+                    name="reference"
+                    value="{{ existing_reference }}"
+                    required
+                  />
                 </div>
+
                 <div class="btn-group-container">
                   <button
                     type="submit"
